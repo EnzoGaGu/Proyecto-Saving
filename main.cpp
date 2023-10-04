@@ -12,6 +12,7 @@
 //#include <boost/filesystem.hpp>
 #include "DtFechaHora.h"
 #include "IControladorUsuario.h"
+#include "Sesion.h"
 #include "Fabrica.h"
 
 using namespace std; 
@@ -21,6 +22,8 @@ using namespace std;
 //char* diagonal = "/";
 Fabrica* factory;
 IControladorUsuario* iConU;
+Sesion* sesion;
+bool sesionI;
 
 void IniciarSesion();
 
@@ -33,9 +36,10 @@ void copiarArchivoReemplazando(const char* ubIn, const char* ubBackup, string no
 int main(){
     factory = Fabrica::getInstancia();
     iConU = factory->getControladorUsuario();
+    sesion = Sesion::getSesion();
 
     int opt;
-    bool sesionI = false; 
+    sesionI = false; 
     bool salir = false; 
 
     while(sesionI == false && salir == false){
@@ -60,6 +64,99 @@ int main(){
                 cout << "La opción no es válida. Reintente" << endl; 
             break; 
         }    
+    }
+
+    if(sesionI == true){
+        cout << "Sesión iniciada con éxito." << endl;
+        while(salir == false){
+            if(!sesion->getUsuario()->getAdmin()){                                          //Si es usuario normal
+                cout << "================================================" << endl;
+                cout << "   1: Agregar juego" << endl;
+                cout << "   2: Agregar partida guardada" << endl;
+                cout << "   3: Agregar configuración" << endl;
+                cout << "   4: Respaldar partidas guardadas reemplazando" << endl;
+                cout << "   5: Respaldar partidas guardadas con historial" << endl;
+                cout << "   6: Respaldar configuraciones" << endl;
+                cout << "   7: Respaldar todo" << endl;
+                cout << "   8: Ver juegos agregados" << endl;
+                cout << "   9: Ver respaldos de partidas" << endl;
+                cout << "   10: Ver respaldos de configuraciones" << endl;
+                cout << "   11: Ver respaldos" << endl;
+                cout << "   12: Subir a la nube" << endl;
+                cout << "   13: Descargar de la nube" << endl;
+                cout << "   14: Actualizar rutas juego" << endl;
+                cout << "   15: Cambiar usuario" << endl;
+                cout << "   0: Salir"   << endl;
+                cout << "Ingrese una opción: " << endl;
+                cin >> opt; 
+
+                switch(opt){
+                    case 1: 
+                    break;
+                    case 2: 
+                    break;
+                    case 3: 
+                    break;
+                    case 4: 
+                    break;
+                    case 5: 
+                    break;
+                    case 6: 
+                    break;
+                    case 7: 
+                    break;
+                    case 8: 
+                    break;
+                    case 9: 
+                    break;
+                    case 10: 
+                    break;
+                    case 11: 
+                    break;
+                    case 12: 
+                    break;
+                    case 13: 
+                    break;
+                    case 14: 
+                    break;
+                    case 15: 
+                    break;
+                    case 0:
+                        salir = true; 
+                    break;
+                    default:
+                        cout << "La opción no es válida. Reintente" << endl; 
+                    break;
+                }
+            }
+            else{                                                                          //Si es admin
+                cout << "================================================" << endl;
+                cout << "   1: Agregar juego al sistema" << endl;
+                cout << "   2: Modificar datos juego" << endl;
+                cout << "   3: Ver usuarios" << endl;
+                cout << "   4: Cambiar usuario" << endl;
+                cout << "   0: Salir"   << endl;
+                cout << "Ingrese una opción: " << endl;
+                cin >> opt; 
+
+                switch(opt){
+                    case 1: 
+                    break;
+                    case 2: 
+                    break;
+                    case 3: 
+                    break;
+                    case 4: 
+                    break;
+                    case 0:
+                        salir = true; 
+                    break;
+                    default:
+                        cout << "La opción no es válida. Reintente" << endl; 
+                    break;
+                }
+            }
+        }
     }
     
 
