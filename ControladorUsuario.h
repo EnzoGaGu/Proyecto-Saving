@@ -11,7 +11,6 @@ using namespace std;
 class ControladorUsuario: public IControladorUsuario{
     private:
         string nick;
-
     public:
         ControladorUsuario();
         void iniciarSesion(string nick, string pass);

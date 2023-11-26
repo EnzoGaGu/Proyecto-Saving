@@ -192,6 +192,7 @@ void IniciarSesion(){
 
     try{
         iConU->iniciarSesion(nick, pass);
+        sesionI = true;
     }
     catch(const std::exception& e){
         std::cerr << e.what() << '\n';
@@ -226,6 +227,7 @@ void Registro(){
         cin >> opt; 
         if(opt == 1){
             iConU->iniciarSesion(nick, pass);
+            sesionI = true;
         }
     }
     catch(const std::exception& e){

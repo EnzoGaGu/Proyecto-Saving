@@ -3,14 +3,16 @@
 
 DtJuego::DtJuego(){}
 
-DtJuego::DtJuego(string idJuego, string nombre, string nombreCarpetaGuardado, DtFechaHora* fechaUltAct, string directorioLocal, map<string, PartidaGuardada*> partidasGuardadas){
+DtJuego::DtJuego(string idJuego, string nombre, string nombreCarpetaGuardado, DtFechaHora* fechaUltAct, string directorioLocal, EnumPlataforma plataforma, string imgLink, string desc, string extensionArchivoGuardado, string extensionConfig){
     this->idJuego = idJuego;
     this->nombre = nombre; 
-    this->nombreCarpetaGuardado = nombreCarpetaGuardado;
-    this->fechaUltAct = fechaUltAct;
-    this->directorioLocal = directorioLocal;
-    this->partidasGuardadas = partidasGuardadas;
+    this->plataforma = plataforma;
+    this->imgLink = imgLink;
+    this->desc = desc;
+    this->extensionesData = extensionesData;
+    this->directoriosData = directoriosData;
 }
+
 
 string DtJuego::getIdJuego(){
     return this->idJuego;
@@ -20,21 +22,26 @@ string DtJuego::getNombre(){
     return this->nombre;
 }
 
-string DtJuego::getNombreCarpetaGuardado(){
-    return this->nombreCarpetaGuardado;
-}
-
-DtFechaHora* DtJuego::getFechaUltAct(){
-    return this->fechaUltAct;
-}
-
-string DtJuego::getDirectorioLocal(){
-    return this->directorioLocal;
-}
-
 EnumPlataforma DtJuego::getPlataforma(){
     return this->plataforma; 
 }
+
+string DtJuego::getImgLink(){
+    return this->imgLink;
+}
+
+string DtJuego::getDesc(){
+    return this->desc;
+}
+
+list<string> DtJuego::getExtensionesData(){
+    return this->extensionesData;
+}
+
+list<string> DtJuego::getDirectoriosData(){
+    return this->directoriosData;
+}
+
 
 DtJuego::~DtJuego(){}
 

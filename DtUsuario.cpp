@@ -1,8 +1,8 @@
-#include "Usuario.h"
+#include "DtUsuario.h"
 
-Usuario::Usuario(){}
+DtUsuario::DtUsuario(){}
 
-Usuario::Usuario(string nick, string nombre, string pass, string email, string pfp, DtFechaHora* fechaInsc, bool admin){
+DtUsuario::DtUsuario(string nick, string nombre, string pass, string email, string pfp, DtFechaHora* fechaInsc, bool admin){
     this->nick = nick;
     this->nombre = nombre;
     this->pass = pass;
@@ -12,67 +12,35 @@ Usuario::Usuario(string nick, string nombre, string pass, string email, string p
     this->admin = admin;
 }
 
-void Usuario::setNick(string nick){
-    this->nick = nick;
-}
-
-string Usuario::getNick(){
+string DtUsuario::getNick(){
     return this->nick;
 }
 
-void Usuario::setNombre(string nombre){
-    this->nombre = nombre;
-}
-
-string Usuario::getNombre(){
+string DtUsuario::getNombre(){
     return this->nombre;
 }
 
-void Usuario::setPass(string pass){
-    this->pass = pass;
-}
-
-string Usuario::getPass(){
+string DtUsuario::getPass(){
     return this->pass;
 }
 
-void Usuario::setEmail(string email){
-    this->email = email;
-}
-
-string Usuario::getEmail(){
+string DtUsuario::getEmail(){
     return this->email;
 }
 
-void Usuario::setPfp(string pfp){
-    this->pfp = pfp;
-}
-
-string Usuario::getPfp(){
+string DtUsuario::getPfp(){
     return this->pfp;
 }
 
-void Usuario::setFechaInsc(DtFechaHora* fechaInsc){
-    this->fechaInsc = fechaInsc;
-}
-
-DtFechaHora* Usuario::getFechaInsc(){
+DtFechaHora* DtUsuario::getFechaInsc(){
     return this->fechaInsc;
 }
 
-void Usuario::setAdmin(bool admin){
-    this->admin = admin;
-}
-
-bool Usuario::getAdmin(){
+bool DtUsuario::getAdmin(){
     return this->admin;
 }
 
-void Usuario::addData(Data* data){
-    this->dataAgregada.push_back(data);
-}
-
-Data* Usuario::findData(string idData){
+Data* DtUsuario::findData(string idData){
     if(memberData(idData) == true){
         list<Data*>::iterator it;
         for(it=this->dataAgregada.begin(); it!=this->dataAgregada.end(); it++){
@@ -86,7 +54,7 @@ Data* Usuario::findData(string idData){
     }
 }
 
-bool Usuario::memberData(string idData){
+bool DtUsuario::memberData(string idData){
     bool exists = false;
 
     list<Data*>::iterator it;
@@ -98,7 +66,7 @@ bool Usuario::memberData(string idData){
     return exists;
 }
 
-DtData* Usuario::getDtData(string idData){
+DtData* DtUsuario::getDtData(string idData){
     Data* data = findData(idData);
     DtData* dtData; 
 
@@ -112,7 +80,7 @@ DtData* Usuario::getDtData(string idData){
     return dtData;
 }
 
-list<DtData*> Usuario::listData(){
+list<DtData*> DtUsuario::listData(){
     list<DtData*> lista;
 
     list<Data*>::iterator it;
@@ -124,17 +92,4 @@ list<DtData*> Usuario::listData(){
     return lista;
 }
 
-void Usuario::removeData(string idData){
-    Data* forRemove; 
-
-    if(memberData(idData) == true){
-        list<Data*>::iterator it;
-        for(it=this->dataAgregada.begin(); it!=this->dataAgregada.end(); it++){
-            if((*it)->getIdData() == idData){
-                
-            }
-        }
-    }
-}
-
-Usuario::~Usuario(){}
+DtUsuario::~DtUsuario(){}

@@ -1,5 +1,5 @@
-principal: DtFechaHora.o DtJuego.o DtPartidaGuardada.o Usuario.o Sesion.o Juego.o PartidaGuardada.o MemCard.o Configuracion.o ManejadorUsuario.o ManejadorJuego.o ControladorUsuario.o Fabrica.o main.o
-	g++ DtFechaHora.o DtJuego.o DtPartidaGuardada.o Usuario.o Sesion.o Juego.o PartidaGuardada.o MemCard.o Configuracion.o ManejadorUsuario.o ManejadorJuego.o ControladorUsuario.o Fabrica.o main.o -g -o proyecto
+principal: DtFechaHora.o DtJuego.o DtData.o Usuario.o Sesion.o Juego.o Data.o MemCard.o Configuracion.o ManejadorUsuario.o ManejadorJuego.o ControladorUsuario.o Fabrica.o main.o
+	g++ DtFechaHora.o DtJuego.o DtData.o Usuario.o Sesion.o Juego.o Data.o MemCard.o Configuracion.o ManejadorUsuario.o ManejadorJuego.o ControladorUsuario.o Fabrica.o main.o -g -o proyecto
 
 DtFechaHora.o: DtFechaHora.cpp
 	g++ -g -c DtFechaHora.cpp
@@ -7,8 +7,8 @@ DtFechaHora.o: DtFechaHora.cpp
 DtJuego.o: DtJuego.cpp
 	g++ -g -c DtJuego.cpp
 
-DtPartidaGuardada.o: DtPartidaGuardada.cpp
-	g++ -g -c DtPartidaGuardada.cpp
+DtData.o: DtData.cpp
+	g++ -g -c DtData.cpp
 
 Usuario.o: Usuario.cpp
 	g++ -g -c Usuario.cpp
@@ -19,8 +19,8 @@ Sesion.o: Sesion.cpp
 Juego.o: Juego.cpp
 	g++ -g -c Juego.cpp
 
-PartidaGuardada.o: PartidaGuardada.cpp
-	g++ -g -c PartidaGuardada.cpp
+Data.o: Data.cpp
+	g++ -g -c Data.cpp
 	
 MemCard.o: MemCard.cpp
 	g++ -g -c MemCard.cpp

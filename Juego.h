@@ -1,46 +1,36 @@
 #ifndef JUEGO
 #define JUEGO
 #include <string>
-#include <map>
+#include <list>
 #include "DtFechaHora.h"
-#include "enumTipo.h"
-#include "PartidaGuardada.h"
-#include "Configuracion.h"
 #include "enumPlataforma.h"
 
 class Juego{
     private:
         string idJuego;
         string nombre;
-        string nombreCarpetaGuardado;
-        DtFechaHora* fechaUltAct;
-        string directorioLocal;
         EnumPlataforma plataforma;
         string imgLink; 
         string desc;
-        map<string, PartidaGuardada*> partidasGuardadas;
-        map<string, Configuracion*> configuraciones;
+        list<string> extensionesData;
+        list<string> directoriosData;
     public:
         Juego();
-        Juego(string idJuego, string nombre, string nombreCarpetaGuardado, DtFechaHora* fechaUltAct, string directorioLocal, EnumPlataforma plataforma, string imgLink, string desc);
+        Juego(string idJuego, string nombre, EnumPlataforma plataforma, string imgLink, string desc, list<string> extensionesData, list<string> directoriosData);
         void setIdJuego(string idJuego);
         string getIdJuego();
         void setNombre(string nombre);
         string getNombre();
-        void setNombreCarpetaGuardado(string nombreCarpetaGuardado);
-        string getNombreCarpetaGuardado();
-        void setFechaUltAct(DtFechaHora* fechaUltAct);
-        DtFechaHora* getFechaUltAct();
-        void setDirectorioLocal(string directorioLocal);
-        string getDirectorioLocal();
         void setPlataforma(EnumPlataforma plataforma);
         EnumPlataforma getPlataforma();
-        void addPartidaGuardada(PartidaGuardada* partida);
-        PartidaGuardada* findPartidaGuardada(string idPartida);
-        void removePartidaGuardada(string idPartida);
-        void addConfiguracion(Configuracion* config);
-        Configuracion* findConfiguracion(string idConfig);
-        void removeConfiguracion(string idConfig);
+        void setImgLink(string imgLink);
+        string getImgLink();
+        void setDesc(string desc);
+        string getDesc();
+        void setExtensionesData(list<string> extensionesData);
+        list<string> getExtensionesData();
+        void setDirectoriosData(list<string> directoriosData);
+        list<string> getDirectoriosData();
         ~Juego();
 };
 

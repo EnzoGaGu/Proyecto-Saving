@@ -1,15 +1,12 @@
-#ifndef USUARIO
-#define USUARIO
+#ifndef DTUSUARIO
+#define DTUSUARIO
 #include <string>
 #include <list>
 #include "DtFechaHora.h"
-#include "Juego.h"
 #include "Data.h"
 #include "DtData.h"
 
-using namespace std;
-
-class Usuario{
+class DtUsuario{
     private:
         string nick;                                        //Nick de usuario (clave)
         string nombre;                                      //Nombre    
@@ -20,29 +17,22 @@ class Usuario{
         bool admin;                                         //Si es admin o no (false por defecto)
         list<Data*> dataAgregada;
     public:
-        Usuario();
-        Usuario(string nick, string nombre, string pass, string email, string pfp, DtFechaHora* fechaInsc, bool admin);
-        void setNick(string nick);
+        DtUsuario();
+        DtUsuario(string nick, string nombre, string pass, string email, string pfp, DtFechaHora* fechaInsc, bool admin);
         string getNick();
-        void setNombre(string nombre);
         string getNombre();
-        void setPass(string pass);
         string getPass();
-        void setEmail(string email);
         string getEmail();
-        void setPfp(string pfp);
         string getPfp();
-        void setFechaInsc(DtFechaHora* fechaInsc);
         DtFechaHora* getFechaInsc();
-        void setAdmin(bool admin);
         bool getAdmin();
-        void addData(Data* data);
         Data* findData(string idData);
         bool memberData(string idData);
         DtData* getDtData(string idData);
         list<DtData*> listData();
-        void removeData(string idData);
-        ~Usuario();
+        ~DtUsuario();
+
 };
+
 
 #endif

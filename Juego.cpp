@@ -3,15 +3,14 @@
 
 Juego::Juego(){}
 
-Juego::Juego(string idJuego, string nombre, string nombreCarpetaGuardado, DtFechaHora* fechaUltAct, string directorioLocal, EnumPlataforma plataforma, string imgLink, string desc){
+Juego::Juego(string idJuego, string nombre, EnumPlataforma plataforma, string imgLink, string desc, list<string> extensionesData, list<string> directoriosData){
     this->idJuego = idJuego;
     this->nombre = nombre; 
-    this->nombreCarpetaGuardado = nombreCarpetaGuardado;
-    this->fechaUltAct = fechaUltAct;
-    this->directorioLocal = directorioLocal;
     this->plataforma = plataforma;
     this->imgLink = imgLink;
     this->desc = desc;
+    this->extensionesData = extensionesData;
+    this->directoriosData = directoriosData;
 }
 
 void Juego::setIdJuego(string idJuego){
@@ -30,30 +29,6 @@ string Juego::getNombre(){
     return this->nombre;
 }
 
-void Juego::setNombreCarpetaGuardado(string nombreCarpetaGuardado){
-    this->nombreCarpetaGuardado = nombreCarpetaGuardado;
-}
-
-string Juego::getNombreCarpetaGuardado(){
-    return this->nombreCarpetaGuardado;
-}
-
-void Juego::setFechaUltAct(DtFechaHora* fechaUltAct){
-    this->fechaUltAct = fechaUltAct;
-}
-
-DtFechaHora* Juego::getFechaUltAct(){
-    return this->fechaUltAct;
-}
-
-void Juego::setDirectorioLocal(string directorioLocal){
-    this->directorioLocal = directorioLocal;
-}
-
-string Juego::getDirectorioLocal(){
-    return this->directorioLocal;
-}
-
 void Juego::setPlataforma(EnumPlataforma plataforma){
     this->plataforma = plataforma;
 }
@@ -62,32 +37,36 @@ EnumPlataforma Juego::getPlataforma(){
     return this->plataforma; 
 }
 
-void Juego::addPartidaGuardada(PartidaGuardada* partida){
-    this->partidasGuardadas.insert({partida->getIdPartida(), partida});
+void Juego::setImgLink(string imgLink){
+    this->imgLink = imgLink;
 }
 
-PartidaGuardada* Juego::findPartidaGuardada(string idPartida){
-    PartidaGuardada* partida;
-    partida = this->partidasGuardadas.find(idPartida)->second;
-    return partida;
+string Juego::getImgLink(){
+    return this->imgLink;
 }
 
-void Juego::removePartidaGuardada(string idPartida){
-    this->partidasGuardadas.erase(idPartida);
+void Juego::setDesc(string desc){
+    this->desc = desc;
 }
 
-void Juego::addConfiguracion(Configuracion* config){
-    this->configuraciones.insert({config->getIdConfig(), config});
+string Juego::getDesc(){
+    return this->desc;
 }
 
-Configuracion* Juego::findConfiguracion(string idConfig){
-    Configuracion* config; 
-    config = this->configuraciones.find(idConfig)->second;
-    return config;
+void Juego::setExtensionesData(list<string> extensionesData){
+    this->extensionesData = extensionesData;
 }
 
-void Juego::removeConfiguracion(string idConfig){
-    this->configuraciones.erase(idConfig);
+list<string> Juego::getExtensionesData(){
+    return this->extensionesData;
+}
+
+void Juego::setDirectoriosData(list<string> directoriosData){
+    this->directoriosData = directoriosData;
+}
+
+list<string> Juego::getDirectoriosData(){
+    return this->directoriosData;
 }
 
 Juego::~Juego(){}

@@ -3,7 +3,7 @@
 MemCard::MemCard(){
 }
 
-MemCard::MemCard(string idPartida, string nombreJuego, string nombrePartida, string directorio, string comentariosJugador, DtFechaHora* fechaUltModificacion, EnumTipo tipo, list<DtJuego*> juegosAlmacenados):PartidaGuardada(idPartida, nombreJuego, nombrePartida, directorio, comentariosJugador, fechaUltModificacion, tipo){
+MemCard::MemCard(string idData, Juego juego, string nombreData, string directorioLocal, string directorioCloud, string comentariosJugador, DtFechaHora* fechaUltModificacion, EnumFuente plataformaFuente, EnumTipoDato tipoDato, list<DtJuego*> juegosAlmacenados):Data(idData, juego, nombreData, directorioLocal, directorioCloud, comentariosJugador, fechaUltModificacion, plataformaFuente, tipoDato){
     this->juegosAlmacenados = juegosAlmacenados;
 }
 
