@@ -1,9 +1,10 @@
+#include <windows.h>
 #include <iostream>
 #include <ctime>
 #include <string>
 #include <cstring>
 #include <sys/stat.h>
-#include <dirent.h>
+//#include <dirent.h>
 #include <fstream>
 #include <winbase.h>
 #include <map>
@@ -293,9 +294,9 @@ void copiarArchivoReemplazando(const char* ubIn, const char* ubBackup, string no
         }
         else{
 
-            mkdir(ubJuego);
+            //mkdir(ubJuego);
 
-            mkdir(ubSaved);
+            //mkdir(ubSaved);
 
             cout << "Se crearon las carpetas necesarias para el backup" << endl;
         }

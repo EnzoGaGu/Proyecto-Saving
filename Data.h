@@ -2,7 +2,7 @@
 #define DATA
 #include <string>
 #include "DtFechaHora.h"
-#include "EnumFuente.h"
+#include "enumFuente.h"
 #include "enumTipoDato.h"
 #include "Juego.h"
 
