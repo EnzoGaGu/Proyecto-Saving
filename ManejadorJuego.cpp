@@ -50,4 +50,8 @@ void ManejadorJuego::remove(string idJuego){
     }
 }
 
+list<Juego*> ManejadorJuego::listar(){
+    return this->juegos;
+}
+
 ManejadorJuego::~ManejadorJuego(){}

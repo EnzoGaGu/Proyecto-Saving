@@ -3,6 +3,7 @@
 #include <string>
 #include "IControladorJuego.h"
 #include "Juego.h"
+#include "DtJuego.h"
 #include "ManejadorJuego.h"
 
 using namespace std; 
@@ -13,6 +14,7 @@ class ControladorJuego: public IControladorJuego{
     public:
         ControladorJuego();
         void seleccionarJuego(string idJuego);
+        list<DtJuego*> listarJuegos();
         ~ControladorJuego();
 };
 

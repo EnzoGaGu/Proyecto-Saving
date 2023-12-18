@@ -2,7 +2,7 @@
 
 Data::Data(){}
 
-Data::Data(string idData, Juego juego, string nombreData, string directorioLocal, string directorioCloud, string comentariosJugador, DtFechaHora* fechaUltModificacion, EnumFuente plataformaFuente, EnumTipoDato tipoDato){
+Data::Data(int idData, Juego* juego, string nombreData, string directorioLocal, string directorioCloud, string comentariosJugador, DtFechaHora* fechaUltModificacion, EnumFuente plataformaFuente, EnumTipoDato tipoDato){
     this->idData = idData;
     this->juego = juego;
     this->nombreData = nombreData;
@@ -14,19 +14,19 @@ Data::Data(string idData, Juego juego, string nombreData, string directorioLocal
     this->tipoDato = tipoDato;
 }
 
-string Data::getIdData(){
+int Data::getIdData(){
     return this->idData;
 }
 
-void Data::setIdData(string idData){
+void Data::setIdData(int idData){
     this->idData = idData;
 }
 
-Juego Data::getJuego(){
+Juego* Data::getJuego(){
     return this->juego;
 }
 
-void Data::setJuego(Juego juego){
+void Data::setJuego(Juego* juego){
     this->juego = juego;
 }
 

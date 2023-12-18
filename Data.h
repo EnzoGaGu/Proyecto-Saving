@@ -10,8 +10,8 @@ using namespace std;
 
 class Data{
     private:
-        string idData;                                             //Identificador de la partida. Para separar las diferentes versiones de una misma
-        Juego juego; 
+        int idData;                                             //Identificador de la partida. Para separar las diferentes versiones de una misma
+        Juego* juego; 
         string nombreData;
         string directorioLocal;                                       //Dirección del archivo en el sistema
         string directorioCloud;
@@ -21,11 +21,11 @@ class Data{
         EnumTipoDato tipoDato;
     public:
         Data();
-        Data(string idData, Juego juego, string nombreData, string directorioLocal, string directorioCloud, string comentariosJugador, DtFechaHora* fechaUltModificacion, EnumFuente plataformaFuente, EnumTipoDato tipoDato);
-        string getIdData();
-        void setIdData(string idData);
-        Juego getJuego();
-        void setJuego(Juego juego);
+        Data(int idData, Juego* juego, string nombreData, string directorioLocal, string directorioCloud, string comentariosJugador, DtFechaHora* fechaUltModificacion, EnumFuente plataformaFuente, EnumTipoDato tipoDato);
+        int getIdData();
+        void setIdData(int idData);
+        Juego* getJuego();
+        void setJuego(Juego* juego);
         string getNombreData();
         void setNombreData(string nombreData);
         string getDirectorioLocal();

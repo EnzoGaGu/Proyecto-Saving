@@ -30,7 +30,11 @@ void IniciarSesion();
 
 void Registro();
 
+void respaldarPartidaConReemplazo();
+
 bool archivoExiste(const char* directorio, string archivo);
+
+void listarJuegos();
 
 void copiarArchivoReemplazando(const char* ubIn, const char* ubBackup, string nombreArchivo, const char* nombreJuego, const char* nombreSaved);
 
@@ -72,27 +76,26 @@ int main(){
         while(salir == false){
             if(!sesion->getUsuario()->getAdmin()){                                          //Si es usuario normal
                 cout << "================================================" << endl;
-                cout << "   1: Agregar juego" << endl;
-                cout << "   2: Agregar partida guardada" << endl;
-                cout << "   3: Agregar configuración" << endl;
-                cout << "   4: Respaldar partidas guardadas reemplazando" << endl;
-                cout << "   5: Respaldar partidas guardadas con historial" << endl;
-                cout << "   6: Respaldar configuraciones" << endl;
-                cout << "   7: Respaldar todo" << endl;
-                cout << "   8: Ver juegos agregados" << endl;
-                cout << "   9: Ver respaldos de partidas" << endl;
-                cout << "   10: Ver respaldos de configuraciones" << endl;
-                cout << "   11: Ver respaldos" << endl;
-                cout << "   12: Subir a la nube" << endl;
-                cout << "   13: Descargar de la nube" << endl;
-                cout << "   14: Actualizar rutas juego" << endl;
-                cout << "   15: Cambiar usuario" << endl;
+                //cout << "   1: Agregar juego" << endl;
+                cout << "   1: Respaldar partidas guardadas reemplazando" << endl;
+                cout << "   2: Respaldar partidas guardadas con historial" << endl;
+                cout << "   3: Respaldar configuraciones" << endl;
+                cout << "   4: Comprobar si respalo está up-to-date" << endl;
+                cout << "   5: Ver juegos agregados" << endl;
+                cout << "   6: Ver respaldos de partidas" << endl;
+                cout << "   7: Ver respaldos de configuraciones" << endl;
+                cout << "   8: Ver respaldos" << endl;
+                cout << "   9: Subir a la nube" << endl;
+                cout << "   10: Descargar de la nube" << endl;
+                cout << "   11: Actualizar rutas juego" << endl;
+                cout << "   12: Cambiar usuario" << endl;
                 cout << "   0: Salir"   << endl;
                 cout << "Ingrese una opción: " << endl;
                 cin >> opt; 
 
                 switch(opt){
                     case 1: 
+                        respaldarPartidaConReemplazo();
                     break;
                     case 2: 
                     break;
@@ -115,12 +118,6 @@ int main(){
                     case 11: 
                     break;
                     case 12: 
-                    break;
-                    case 13: 
-                    break;
-                    case 14: 
-                    break;
-                    case 15: 
                     break;
                     case 0:
                         salir = true; 
@@ -159,27 +156,6 @@ int main(){
             }
         }
     }
-    
-
-    /*
-    const char* directorio;
-    string dir;
-    string archivo;
-
-    cout << "Ingrese el directorio donde almacena los archivos: ";
-    getline(cin, dir);
-
-    cout << "Ingrese el nombre del archivo que desea: ";
-    cin >> archivo;
-
-    directorio = dir.c_str();
-
-    copiarArchivoReemplazando(directorio, "C:/Users/ElDeLaBarba/Desktop/Proyecto Gonza/Backup", "GTABACK", "GTA VC", "GTA VC SAVE");
-
-    if(archivoExiste(directorio, archivo)){
-        copiarArchivoReemplazando(directorio, "C:/Users/ElDeLaBarba/Desktop/Proyecto Gonza/Backup", "GTABACK", "GTA VC", "GTA VC SAVE");
-    }
-    */
 }
 
 void IniciarSesion(){
@@ -267,50 +243,16 @@ bool archivoExiste(const char* directorio, string archivo){
     return existe; 
 }
 
-void copiarArchivoReemplazando(const char* ubIn, const char* ubBackup, string nombreArchivo, const char* nombreJuego, const char* nombreSaved){
-    struct stat sb; 
-
-    string dir; 
-
-    char* ubJuego;                                                            //Carpeta del juego dentro del backup
-    char* ubSaved;                                                            //Carpeta de las partidas guardadas del juego dentro del backup
-
-    if(stat(ubBackup, &sb) == 0){
-        cout << "La carpeta de respaldo existe" << endl;
-
-
-        strcpy(ubJuego, ubBackup);
-        //strcat(ubJuego, diagonal);
-        strcat(ubJuego, nombreJuego);
-
-
-        ubSaved = ubJuego;
-        //strcat(ubSaved, diagonal);
-        strcat(ubSaved, nombreSaved);
-
-
-        if(stat(ubJuego, &sb) == 0){
-            cout << "La carpeta del juego ya existe" << endl;
-        }
-        else{
-
-            //mkdir(ubJuego);
-
-            //mkdir(ubSaved);
-
-            cout << "Se crearon las carpetas necesarias para el backup" << endl;
-        }
-
-        
-
-    } 
-    else{
-        cout << "La carpeta de respaldo proporcionada no existe" << endl;
-    }
+void respaldarPartidaConReemplazo(){
+    
 }
 
 
-/*
+void listarJuegos(){
+
+}
+
+
 //Fecha y hora actual
 DtFechaHora* fechaHoraActual(){
     time_t now = time(0);
@@ -320,6 +262,4 @@ DtFechaHora* fechaHoraActual(){
     DtFechaHora* dtFechaHora = new DtFechaHora(ltm->tm_mday,(1+ltm->tm_mon),(1900+ltm->tm_year),(ltm->tm_hour),(ltm->tm_min));
     return dtFechaHora;
 }
-
-*/
 

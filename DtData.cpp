@@ -2,7 +2,7 @@
 
 DtData::DtData(){}
 
-DtData::DtData(string idData, Juego juego, string nombreData, string directorioLocal, string directorioCloud, string comentariosJugador, DtFechaHora* fechaUltModificacion, EnumFuente plataformaFuente, EnumTipoDato tipoDato){
+DtData::DtData(int idData, Juego juego, string nombreData, string directorioLocal, string directorioCloud, string comentariosJugador, DtFechaHora* fechaUltModificacion, EnumFuente plataformaFuente, EnumTipoDato tipoDato){
     this->idData = idData;
     this->juego = juego;
     this->nombreData = nombreData;
@@ -14,7 +14,7 @@ DtData::DtData(string idData, Juego juego, string nombreData, string directorioL
     this->tipoDato = tipoDato;
 }
 
-string DtData::getIdData(){
+int DtData::getIdData(){
     return this->idData;
 }
 

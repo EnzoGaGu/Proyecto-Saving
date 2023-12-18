@@ -4,6 +4,9 @@
 #include "IControladorData.h"
 #include "DtFechaHora.h"
 #include "enumTipoDato.h"
+#include "ManejadorJuego.h"
+#include "Sesion.h"
+#include "Data.h"
 #include <sys/stat.h>
 //#include <dirent.h>
 #include <fstream>
@@ -19,11 +22,13 @@ class ControladorData : public IControladorData{
         string nombreArchivo;
         string directorioLocal;
         string directorioBackup;
+        Data* newData;
     public:
         ControladorData();
         void encontrarArchivo(string directorio, string archivo);
         void crearCarpetaBackup(string directorioBackup, string nombreJuego, DtFechaHora* fecha, EnumTipoDato tipoDato, bool conReemplazo);
         void backupearDatos(bool conReemplazo);
+        void crearVirtualData(string idJuego, string nombreData, string comentariosJugador, DtFechaHora* fechaCreacionData, EnumFuente plataforma, EnumTipoDato tipoDato);
         ~ControladorData();
 };
 

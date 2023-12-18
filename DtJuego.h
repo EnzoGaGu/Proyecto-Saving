@@ -18,7 +18,7 @@ class DtJuego{
         list<string> directoriosData;
     public:
         DtJuego();
-        DtJuego(string idJuego, string nombre, string nombreCarpetaGuardado, DtFechaHora* fechaUltAct, string directorioLocal, EnumPlataforma plataforma, string imgLink, string desc, string extensionArchivoGuardado, string extensionConfig);
+        DtJuego(string idJuego, string nombre, EnumPlataforma plataforma, string imgLink, string desc, list<string> extensionesData, list<string> directoriosData);
         string getIdJuego();
         string getNombre();
         EnumPlataforma getPlataforma();

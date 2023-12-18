@@ -19,8 +19,12 @@ void ControladorData::encontrarArchivo(string directorio, string archivo){
     }
 }
 
-void ControladorData::crearCarpetaBackup(string directorioBackup, string nombreJuego, DtFechaHora* fecha, EnumTipoDato tipoDato, bool conReemplazo){
+void ControladorData::crearCarpetaBackup(string directorioBackup, string idJuego, DtFechaHora* fecha, EnumTipoDato tipoDato, bool conReemplazo){
     struct stat sb;
+    ManejadorJuego* mj = ManejadorJuego::getInstancia();
+
+    string nombreJuego = mj->find(idJuego)->getNombre();
+
     string directorioJuego = directorioBackup + "/" + nombreJuego;
     string reem = directorioJuego + "/reemplazo";
     string noReem = directorioJuego + "/SinReemplazo"; 
@@ -104,6 +108,27 @@ void ControladorData::backupearDatos(bool conReemplazo){
             cout << "Archivo copiado exitosamente." << endl; 
         }
     }
+}
+
+void ControladorData::crearVirtualData(string idJuego, string nombreData, string comentariosJugador, DtFechaHora* fechaCreacionData, EnumFuente plataforma, EnumTipoDato tipoDato){
+    ManejadorJuego* mj = ManejadorJuego::getInstancia();
+
+    Juego* juego = mj->find(idJuego);
+    int idData; 
+
+    Sesion* sesion = Sesion::getSesion();
+    Usuario* user = sesion->getUsuario();
+
+    if(!user->listData().empty()){
+        idData = user->listData().back()->getIdData() + 1;
+    }
+    else{
+        idData = 0; 
+    }
+
+    Data* newData = new Data(idData, juego, nombreData, this->directorioLocal, this->directorioBackup, comentariosJugador, fechaCreacionData, plataforma, tipoDato);
+
+    user->addData(newData);
 }
 
 ControladorData::~ControladorData(){}
