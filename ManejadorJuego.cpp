@@ -15,7 +15,7 @@ void ManejadorJuego::add(Juego* juego){
     juegos.push_back(juego);
 }
 
-bool ManejadorJuego::member(string idJuego){
+bool ManejadorJuego::member(int idJuego){
     bool member = false;
     list<Juego*>::iterator it;
     for(it=this->juegos.begin(); it!=this->juegos.end(); it++){
@@ -26,7 +26,7 @@ bool ManejadorJuego::member(string idJuego){
     return member;
 }
 
-Juego* ManejadorJuego::find(string idJuego){
+Juego* ManejadorJuego::find(int idJuego){
     Juego* juego = NULL;
     list<Juego*>::iterator it;
     for(it=this->juegos.begin(); it!=this->juegos.end(); it++){
@@ -37,7 +37,7 @@ Juego* ManejadorJuego::find(string idJuego){
     return juego;
 }
 
-void ManejadorJuego::remove(string idJuego){
+void ManejadorJuego::remove(int idJuego){
     Juego* juego;
 
     list<Juego*>::iterator it;

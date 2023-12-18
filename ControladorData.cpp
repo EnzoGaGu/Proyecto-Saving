@@ -3,23 +3,96 @@
 
 ControladorData::ControladorData(){}
 
-void ControladorData::encontrarArchivo(string directorio, string archivo){
+
+//Busca en el sistema todos los archivos posibles de un juego específico. Recorre todas las carpetas guardadas
+list<string> ControladorData::encontrarArchivosPorJuego(int idJuego){
+    ManejadorJuego* mj = ManejadorJuego::getInstancia();
+    Juego* juego = mj->find(idJuego);
+
+    list<string> directoriosEncontrados; 
+
+    string directorio; 
+
+    if(!juego->getArchivosData().empty() && !juego->getDirectoriosData().empty()){
+        list<string>::iterator it; 
+        for(it = juego->getDirectoriosData().begin(); it != juego->getDirectoriosData().end(); it++){
+            list<string>::iterator iter; 
+            for(iter = juego->getArchivosData().begin(); iter != juego->getArchivosData().end(); iter++){
+                directorio = encontrarArchivo((*it), (*iter));
+                if(directorio != ""){
+                    directoriosEncontrados.push_back(directorio);
+                }
+            }
+        }
+    }
+    else{
+        string msg = "El juego no tiene todos los datos necesarios registrados";
+        directoriosEncontrados.push_back(msg);
+    }
+    return directoriosEncontrados;
+}
+
+
+//Comprueba que un archivo exista en el sistema. Si lo hace, retorna un string con la ruta de éste.
+//Si no, retorna un string vacío
+string ControladorData::encontrarArchivo(string directorio, string archivo){
     struct stat sb; 
 
     if(stat(directorio.c_str(), &sb) == 0){
-        string DirArchivo = directorio + "/" + archivo; 
+        string dirArchivo = directorio + "/" + archivo; 
 
-        ifstream archivoA(DirArchivo);
+        ifstream archivoA(dirArchivo);
 
         if(archivoA.good()){
             archivoA.close();
-            this->nombreArchivo = archivo; 
-            this->directorioLocal = directorio;
+            return dirArchivo; 
         }
+    }
+    return "";
+}
+
+
+
+//Se le pasa la ruta del archivo que el usuario quiere backupear. El trabajo de la función es separar
+//dicho string en carpeta y nombre de archivo, y guardarlos en las variables correspondientes del controlador.
+void ControladorData::seleccionarDirectorioLocal(string seleccionado){
+    string directorioLocal, nombreArchivo; 
+
+    const char *ruta = seleccionado.c_str();
+
+    char *ultimoSeparador = strrchr(ruta, '/');
+
+    if(ultimoSeparador != NULL){
+        int posicionSeparador = ultimoSeparador - seleccionado.c_str();
+
+        //Crear arrays del largo necesario
+        char rutaDirectorio[posicionSeparador + 1];
+        char nombreArchivo[strlen(ruta) - posicionSeparador];
+
+        //Copiar el directorio
+        strncpy(rutaDirectorio, ruta, posicionSeparador);
+        rutaDirectorio[posicionSeparador] = '\0';
+
+        string directorio(rutaDirectorio);
+
+        //Copiar el nombre del archivo
+        strcpy(nombreArchivo, ultimoSeparador + 1);
+
+        string nombreA(nombreArchivo);
+
+        this->directorioLocal = directorio;
+        this->nombreArchivo = nombreA;
+
+    }
+    else{
+        cout << "La ruta no contiene un separador válido" << endl; 
     }
 }
 
-void ControladorData::crearCarpetaBackup(string directorioBackup, string idJuego, DtFechaHora* fecha, EnumTipoDato tipoDato, bool conReemplazo){
+
+//Comprueba si las carpetas necesarias para realizar el backup existen en la ruta dada por el usuario, y guarda la dirección en el controlador. Si éstas no están presentes, las crea.
+//Tiene en cuenta si el usuario está queriendo hacer un backup con o sin historial.
+void ControladorData::crearCarpetaBackup(string directorioBackup, int idJuego, DtFechaHora* fecha, EnumTipoDato tipoDato, bool conReemplazo){
     struct stat sb;
     ManejadorJuego* mj = ManejadorJuego::getInstancia();
 
@@ -80,6 +153,9 @@ void ControladorData::crearCarpetaBackup(string directorioBackup, string idJuego
     
 }
 
+
+//Backupea el archivo especificado en la función SeleccionarArchivoLocal, en la carpeta elegida en CrearCarpetaBackup.
+//Tiene en cuenta si el usuario quiere reemplazar o no.
 void ControladorData::backupearDatos(bool conReemplazo){
 
     if(conReemplazo){
@@ -110,7 +186,8 @@ void ControladorData::backupearDatos(bool conReemplazo){
     }
 }
 
-void ControladorData::crearVirtualData(string idJuego, string nombreData, string comentariosJugador, DtFechaHora* fechaCreacionData, EnumFuente plataforma, EnumTipoDato tipoDato){
+//Crea un objeto de clase Data, y lo almacena en el usuario que inició sesión
+void ControladorData::crearVirtualData(int idJuego, string nombreData, string comentariosJugador, DtFechaHora* fechaCreacionData, EnumFuente plataforma, EnumTipoDato tipoDato){
     ManejadorJuego* mj = ManejadorJuego::getInstancia();
 
     Juego* juego = mj->find(idJuego);

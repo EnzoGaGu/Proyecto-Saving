@@ -10,10 +10,17 @@ using namespace std;
 
 class ControladorJuego: public IControladorJuego{
     private:
-        string idJuego;
+        string nombreJuego;
+        EnumPlataforma plataforma;
+        string imgLink;
+        string desc;
+        list<string> archivosData;
+        list<string> directoriosData; 
     public:
         ControladorJuego();
         void seleccionarJuego(string idJuego);
+        void recopilarDatos(string nombre, EnumPlataforma plataforma, string imgLink, string desc, list<string> archivosData, list<string>directoriosData);
+        void agregarJuego();
         list<DtJuego*> listarJuegos();
         ~ControladorJuego();
 };

@@ -13,6 +13,7 @@
 //#include <boost/filesystem.hpp>
 #include "DtFechaHora.h"
 #include "IControladorUsuario.h"
+#include "IControladorJuego.h"
 #include "Sesion.h"
 #include "Fabrica.h"
 
@@ -23,6 +24,7 @@ using namespace std;
 //char* diagonal = "/";
 Fabrica* factory;
 IControladorUsuario* iConU;
+IControladorJuego* iConJ;
 Sesion* sesion;
 bool sesionI;
 
@@ -41,6 +43,7 @@ void copiarArchivoReemplazando(const char* ubIn, const char* ubBackup, string no
 int main(){
     factory = Fabrica::getInstancia();
     iConU = factory->getControladorUsuario();
+    iConJ = factory->getControladorJuego();
     sesion = Sesion::getSesion();
 
     int opt;
@@ -244,12 +247,26 @@ bool archivoExiste(const char* directorio, string archivo){
 }
 
 void respaldarPartidaConReemplazo(){
+    string idJuego;
+    
+    listarJuegos();
+
+    cout << "Inserte el ID del juego al que pertenece la partida:";
+    cin >> idJuego;
+
     
 }
 
 
 void listarJuegos(){
+    list<DtJuego*> juegos = iConJ->listarJuegos();
 
+    list<DtJuego*>::iterator it;
+    for(it = juegos.begin(); it!= juegos.end(); it++){
+        cout << "================================================" << endl;
+        cout << (*it);
+        cout << "================================================" << endl;
+    }
 }
 
 

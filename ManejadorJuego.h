@@ -14,9 +14,9 @@ class ManejadorJuego{
     public:
         static ManejadorJuego* getInstancia();
         void add(Juego* juego);
-        bool member(string idJuego);
-        Juego* find(string idJuego);
-        void remove(string idJuego);
+        bool member(int idJuego);
+        Juego* find(int idJuego);
+        void remove(int idJuego);
         list<Juego*> listar();
         ~ManejadorJuego();
 };

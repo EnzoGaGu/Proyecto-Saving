@@ -9,22 +9,22 @@
 
 class DtJuego{
     private:
-        string idJuego;
+        int idJuego;
         string nombre;
         EnumPlataforma plataforma;
         string imgLink; 
         string desc;
-        list<string> extensionesData;
+        list<string> archivosData;
         list<string> directoriosData;
     public:
         DtJuego();
-        DtJuego(string idJuego, string nombre, EnumPlataforma plataforma, string imgLink, string desc, list<string> extensionesData, list<string> directoriosData);
-        string getIdJuego();
+        DtJuego(int idJuego, string nombre, EnumPlataforma plataforma, string imgLink, string desc, list<string> archivosData, list<string> directoriosData);
+        int getIdJuego();
         string getNombre();
         EnumPlataforma getPlataforma();
         string getImgLink();
         string getDesc();
-        list<string> getExtensionesData();
+        list<string> getArchivosData();
         list<string> getDirectoriosData();
         ~DtJuego();
 

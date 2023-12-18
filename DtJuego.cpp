@@ -3,18 +3,18 @@
 
 DtJuego::DtJuego(){}
 
-DtJuego::DtJuego(string idJuego, string nombre, EnumPlataforma plataforma, string imgLink, string desc, list<string> extensionesData, list<string> directoriosData){
+DtJuego::DtJuego(int idJuego, string nombre, EnumPlataforma plataforma, string imgLink, string desc, list<string> archivosData, list<string> directoriosData){
     this->idJuego = idJuego;
     this->nombre = nombre; 
     this->plataforma = plataforma;
     this->imgLink = imgLink;
     this->desc = desc;
-    this->extensionesData = extensionesData;
+    this->archivosData = archivosData;
     this->directoriosData = directoriosData;
 }
 
 
-string DtJuego::getIdJuego(){
+int DtJuego::getIdJuego(){
     return this->idJuego;
 }
 
@@ -34,8 +34,8 @@ string DtJuego::getDesc(){
     return this->desc;
 }
 
-list<string> DtJuego::getExtensionesData(){
-    return this->extensionesData;
+list<string> DtJuego::getArchivosData(){
+    return this->archivosData;
 }
 
 list<string> DtJuego::getDirectoriosData(){
@@ -47,6 +47,7 @@ DtJuego::~DtJuego(){}
 
 
 ostream& operator <<(ostream& salida,const DtJuego& a) {
-	cout << "Nombre " << a.nombre << endl;
+	cout << "ID: " << a.idJuego << endl;
+    cout << "Nombre: " << a.nombre << endl;
 	return salida;
 }

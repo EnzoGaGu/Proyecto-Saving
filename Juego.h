@@ -7,18 +7,18 @@
 
 class Juego{
     private:
-        string idJuego;
+        int idJuego;
         string nombre;
         EnumPlataforma plataforma;
         string imgLink; 
         string desc;
-        list<string> extensionesData;
+        list<string> archivosData;
         list<string> directoriosData;
     public:
         Juego();
-        Juego(string idJuego, string nombre, EnumPlataforma plataforma, string imgLink, string desc, list<string> extensionesData, list<string> directoriosData);
-        void setIdJuego(string idJuego);
-        string getIdJuego();
+        Juego(int idJuego, string nombre, EnumPlataforma plataforma, string imgLink, string desc, list<string> archivosData, list<string> directoriosData);
+        void setIdJuego(int idJuego);
+        int getIdJuego();
         void setNombre(string nombre);
         string getNombre();
         void setPlataforma(EnumPlataforma plataforma);
@@ -27,8 +27,8 @@ class Juego{
         string getImgLink();
         void setDesc(string desc);
         string getDesc();
-        void setExtensionesData(list<string> extensionesData);
-        list<string> getExtensionesData();
+        void setArchivosData(list<string> archivosData);
+        list<string> getArchivosData();
         void setDirectoriosData(list<string> directoriosData);
         list<string> getDirectoriosData();
         ~Juego();

@@ -3,21 +3,21 @@
 
 Juego::Juego(){}
 
-Juego::Juego(string idJuego, string nombre, EnumPlataforma plataforma, string imgLink, string desc, list<string> extensionesData, list<string> directoriosData){
+Juego::Juego(int idJuego, string nombre, EnumPlataforma plataforma, string imgLink, string desc, list<string> archivosData, list<string> directoriosData){
     this->idJuego = idJuego;
     this->nombre = nombre; 
     this->plataforma = plataforma;
     this->imgLink = imgLink;
     this->desc = desc;
-    this->extensionesData = extensionesData;
+    this->archivosData = archivosData;
     this->directoriosData = directoriosData;
 }
 
-void Juego::setIdJuego(string idJuego){
+void Juego::setIdJuego(int idJuego){
     this->idJuego = idJuego;
 }
 
-string Juego::getIdJuego(){
+int Juego::getIdJuego(){
     return this->idJuego;
 }
 
@@ -53,12 +53,12 @@ string Juego::getDesc(){
     return this->desc;
 }
 
-void Juego::setExtensionesData(list<string> extensionesData){
-    this->extensionesData = extensionesData;
+void Juego::setArchivosData(list<string> archivosData){
+    this->archivosData = archivosData;
 }
 
-list<string> Juego::getExtensionesData(){
-    return this->extensionesData;
+list<string> Juego::getArchivosData(){
+    return this->archivosData;
 }
 
 void Juego::setDirectoriosData(list<string> directoriosData){

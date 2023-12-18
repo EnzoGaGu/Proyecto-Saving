@@ -2,6 +2,8 @@
 
 ControladorUsuario::ControladorUsuario(){}
 
+
+
 void ControladorUsuario::iniciarSesion(string nick, string pass){
     ManejadorUsuario* mu = ManejadorUsuario::getInstancia();
     Sesion* sesion = Sesion::getSesion();

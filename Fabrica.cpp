@@ -15,4 +15,12 @@ IControladorUsuario* Fabrica::getControladorUsuario(){
     return new ControladorUsuario();
 }
 
+IControladorJuego* Fabrica::getControladorJuego(){
+    return new ControladorJuego();
+}
+
+IControladorData* Fabrica::getControladorData(){
+    return new ControladorData();
+}
+
 Fabrica::~Fabrica(){}
