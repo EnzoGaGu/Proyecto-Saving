@@ -11,13 +11,18 @@ list<string> ControladorData::encontrarArchivosPorJuego(int idJuego){
 
     list<string> directoriosEncontrados; 
 
+    int cont = 0; 
+
     string directorio; 
 
     if(!juego->getArchivosData().empty() && !juego->getDirectoriosData().empty()){
         list<string>::iterator it; 
-        for(it = juego->getDirectoriosData().begin(); it != juego->getDirectoriosData().end(); it++){
-            list<string>::iterator iter; 
-            for(iter = juego->getArchivosData().begin(); iter != juego->getArchivosData().end(); iter++){
+        list<string>::iterator iter;
+        list<string> directoriosData = juego->getDirectoriosData();
+        list<string> archivosData = juego->getArchivosData();
+
+        for(it = directoriosData.begin(); it != directoriosData.end(); it++){
+            for(iter = archivosData.begin(); iter != archivosData.end(); iter++){
                 directorio = encontrarArchivo((*it), (*iter));
                 if(directorio != ""){
                     directoriosEncontrados.push_back(directorio);
@@ -38,14 +43,18 @@ list<string> ControladorData::encontrarArchivosPorJuego(int idJuego){
 string ControladorData::encontrarArchivo(string directorio, string archivo){
     struct stat sb; 
 
+    //cout << directorio; 
     if(stat(directorio.c_str(), &sb) == 0){
         string dirArchivo = directorio + "/" + archivo; 
 
-        ifstream archivoA(dirArchivo);
+        if(fs::exists(dirArchivo)){
+            ifstream archivoA(dirArchivo);
 
-        if(archivoA.good()){
+            if(archivoA.good()){
+                archivoA.close();
+                return dirArchivo; 
+            }
             archivoA.close();
-            return dirArchivo; 
         }
     }
     return "";
@@ -58,9 +67,13 @@ string ControladorData::encontrarArchivo(string directorio, string archivo){
 void ControladorData::seleccionarDirectorioLocal(string seleccionado){
     string directorioLocal, nombreArchivo; 
 
+    cout << seleccionado;
+
     const char *ruta = seleccionado.c_str();
 
     char *ultimoSeparador = strrchr(ruta, '/');
+
+    cout << *ruta; 
 
     if(ultimoSeparador != NULL){
         int posicionSeparador = ultimoSeparador - seleccionado.c_str();
@@ -96,10 +109,12 @@ void ControladorData::crearCarpetaBackup(string directorioBackup, int idJuego, D
     struct stat sb;
     ManejadorJuego* mj = ManejadorJuego::getInstancia();
 
+    replace(directorioBackup.begin(), directorioBackup.end(), '\\', '/');
+
     string nombreJuego = mj->find(idJuego)->getNombre();
 
     string directorioJuego = directorioBackup + "/" + nombreJuego;
-    string reem = directorioJuego + "/reemplazo";
+    string reem = directorioJuego + "/Reemplazo";
     string noReem = directorioJuego + "/SinReemplazo"; 
     string directorioCompleto; 
     bool exit = false;
@@ -143,7 +158,8 @@ void ControladorData::crearCarpetaBackup(string directorioBackup, int idJuego, D
                 exit = true; 
             }
             else{
-
+                this->directorioBackup = reem.c_str();
+                exit = true; 
             }
         }
         else{
@@ -159,9 +175,12 @@ void ControladorData::crearCarpetaBackup(string directorioBackup, int idJuego, D
 void ControladorData::backupearDatos(bool conReemplazo){
 
     if(conReemplazo){
-        fs::remove_all(this->directorioBackup);
+        fs::remove(this->directorioBackup + "/" + this->nombreArchivo);
+        //fs::create_directory(this->directorioBackup);
+        cout << directorioBackup;
     }
 
+    //replace(directorioBackup.begin(), directorioBackup.end(), '\\', '/');
 
     string ogPath = this->directorioLocal + "/" + this->nombreArchivo;
     string newPath = this->directorioBackup + "/" + this->nombreArchivo;

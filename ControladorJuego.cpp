@@ -26,7 +26,7 @@ list<DtJuego*> ControladorJuego::listarJuegos(){
 }
 
 //Recopila datos de un juego a agregar dados por el usuario, y los guarda en el controlador.
-void ControladorJuego::recopilarDatos(string nombre, EnumPlataforma plataforma, string imgLink, string desc, list<string> archivosData, list<string>directoriosData){
+void ControladorJuego::recopilarDatos(string nombre, EnumPlataforma plataforma, string imgLink, string desc, list<string> archivosData, list<string> directoriosData){
     this->nombreJuego = nombre;
     this->plataforma = plataforma;
     this->imgLink = imgLink; 
@@ -35,10 +35,18 @@ void ControladorJuego::recopilarDatos(string nombre, EnumPlataforma plataforma, 
     this->directoriosData = directoriosData;
 }
 
-
+//Agrega un juego a la lista global, utilizando los datos almacenados en el controlador
 void ControladorJuego::agregarJuego(){
     ManejadorJuego* mj = ManejadorJuego::getInstancia();
+    int idJuego = 0;
 
+    if(!mj->listar().empty()){
+        idJuego = mj->listar().back()->getIdJuego() + 1;
+    }
+
+    Juego* juego = new Juego(idJuego, this->nombreJuego, this->plataforma, this->imgLink, this->desc, this->archivosData, this->directoriosData);
+
+    mj->add(juego);
 }
 
 ControladorJuego::~ControladorJuego(){}

@@ -72,7 +72,7 @@ void Usuario::addData(Data* data){
     this->dataAgregada.push_back(data);
 }
 
-Data* Usuario::findData(string idData){
+Data* Usuario::findData(int idData){
     if(memberData(idData) == true){
         list<Data*>::iterator it;
         for(it=this->dataAgregada.begin(); it!=this->dataAgregada.end(); it++){
@@ -86,7 +86,7 @@ Data* Usuario::findData(string idData){
     }
 }
 
-bool Usuario::memberData(string idData){
+bool Usuario::memberData(int idData){
     bool exists = false;
 
     list<Data*>::iterator it;
@@ -98,7 +98,7 @@ bool Usuario::memberData(string idData){
     return exists;
 }
 
-DtData* Usuario::getDtData(string idData){
+DtData* Usuario::getDtData(int idData){
     Data* data = findData(idData);
     DtData* dtData; 
 
@@ -124,7 +124,7 @@ list<DtData*> Usuario::listData(){
     return lista;
 }
 
-void Usuario::removeData(string idData){
+void Usuario::removeData(int idData){
     Data* forRemove; 
 
     if(memberData(idData) == true){

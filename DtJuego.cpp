@@ -49,5 +49,19 @@ DtJuego::~DtJuego(){}
 ostream& operator <<(ostream& salida,const DtJuego& a) {
 	cout << "ID: " << a.idJuego << endl;
     cout << "Nombre: " << a.nombre << endl;
+    cout << "Plataforma: " << static_cast<EnumPlataforma>(a.plataforma) << endl;
+    cout << "Descripción: " << a.desc << endl;
+
+
+    cout << "Directorios locales: " << endl; 
+    for(const string directorio : a.directoriosData){
+        cout << "   =>" << directorio << endl; 
+    }
+
+    cout << "Nombres de archivo: " << endl; 
+    for(const string archivo : a.archivosData){
+        cout << "   =>" << archivo << endl; 
+    }
+
 	return salida;
 }

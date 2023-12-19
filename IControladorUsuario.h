@@ -1,5 +1,6 @@
 #ifndef ICONTROLADORUSUARIO
 #define ICONTROLADORUSUARIO
+#include <windows.h>
 #include <string>
 #include <ctime>
 #include <iostream>

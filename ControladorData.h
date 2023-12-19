@@ -1,6 +1,6 @@
 #ifndef CONTROLADORDATA
 #define CONTROLADORDATA
-#include <string>
+//#include <string>
 #include "IControladorData.h"
 #include "DtFechaHora.h"
 #include "enumTipoDato.h"
@@ -9,8 +9,8 @@
 #include "Data.h"
 #include <sys/stat.h>
 //#include <dirent.h>
-#include <fstream>
-#include <winbase.h>
+//#include <fstream>
+//#include <winbase.h>
 #include <filesystem>
 namespace fs = std::filesystem;
 

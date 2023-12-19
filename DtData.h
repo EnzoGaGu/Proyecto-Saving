@@ -11,7 +11,7 @@ using namespace std;
 class DtData{
     private:
         int idData;                                             //Identificador de la partida. Para separar las diferentes versiones de una misma
-        Juego juego; 
+        Juego* juego; 
         string nombreData;
         string directorioLocal;                                       //Dirección del archivo en el sistema
         string directorioCloud;
@@ -21,9 +21,9 @@ class DtData{
         EnumTipoDato tipoDato;
     public:
         DtData();
-        DtData(int idData, Juego juego, string nombreData, string directorioLocal, string directorioCloud, string comentariosJugador, DtFechaHora* fechaUltModificacion, EnumFuente plataformaFuente, EnumTipoDato tipoDato);
+        DtData(int idData, Juego* juego, string nombreData, string directorioLocal, string directorioCloud, string comentariosJugador, DtFechaHora* fechaUltModificacion, EnumFuente plataformaFuente, EnumTipoDato tipoDato);
         int getIdData();
-        Juego getJuego();
+        Juego* getJuego();
         string getNombreData();
         string getDirectorioLocal();
         string getDirectorioCloud();

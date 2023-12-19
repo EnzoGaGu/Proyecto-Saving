@@ -7,6 +7,7 @@
 #include "IControladorData.h"
 #include "ControladorData.h"
 
+
 class Fabrica{
     private:
         static Fabrica* instancia;

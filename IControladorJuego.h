@@ -1,9 +1,10 @@
 #ifndef ICONTROLADORJUEGO
 #define ICONTROLADORJUEGO
+#include <windows.h>
 #include <string>
-#include "IControladorJuego.h"
+#include <iostream>
 #include "Juego.h"
-#include "ManejadorJuego.h"
+#include "DtJuego.h"
 
 using namespace std; 
 

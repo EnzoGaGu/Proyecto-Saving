@@ -1,5 +1,6 @@
 #include "Fabrica.h"
 
+
 Fabrica *Fabrica::instancia = NULL;
 
 Fabrica::Fabrica() {}

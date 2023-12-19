@@ -1,5 +1,5 @@
-principal: DtFechaHora.o DtJuego.o DtData.o Usuario.o Sesion.o Juego.o Data.o MemCard.o Configuracion.o ManejadorUsuario.o ManejadorJuego.o ControladorUsuario.o Fabrica.o main.o
-	g++ DtFechaHora.o DtJuego.o DtData.o Usuario.o Sesion.o Juego.o Data.o MemCard.o Configuracion.o ManejadorUsuario.o ManejadorJuego.o ControladorUsuario.o Fabrica.o main.o -g -o proyecto
+principal: DtFechaHora.o DtJuego.o DtData.o Usuario.o Sesion.o Juego.o Data.o Configuracion.o ManejadorUsuario.o ManejadorJuego.o ControladorUsuario.o ControladorJuego.o ControladorData.o Fabrica.o main.o
+	g++ DtFechaHora.o DtJuego.o DtData.o Usuario.o Sesion.o Juego.o Data.o Configuracion.o ManejadorUsuario.o ManejadorJuego.o ControladorUsuario.o ControladorJuego.o ControladorData.o Fabrica.o main.o -g -luuid -o proyecto -lshell32 -lole32
 
 DtFechaHora.o: DtFechaHora.cpp
 	g++ -g -c DtFechaHora.cpp
@@ -22,8 +22,8 @@ Juego.o: Juego.cpp
 Data.o: Data.cpp
 	g++ -g -c Data.cpp
 	
-MemCard.o: MemCard.cpp
-	g++ -g -c MemCard.cpp
+#MemCard.o: MemCard.cpp
+#	g++ -g -c MemCard.cpp
 
 Configuracion.o: Configuracion.cpp
 	g++ -g -c Configuracion.cpp
@@ -36,6 +36,12 @@ ManejadorJuego.o: ManejadorJuego.cpp
 
 ControladorUsuario.o: ControladorUsuario.cpp
 	g++ -g -c ControladorUsuario.cpp
+
+ControladorJuego.o: ControladorJuego.cpp
+	g++ -g -c ControladorJuego.cpp
+
+ControladorData.o: ControladorData.cpp
+	g++ -g -c ControladorData.cpp
 
 Fabrica.o: Fabrica.cpp
 	g++ -g -c Fabrica.cpp

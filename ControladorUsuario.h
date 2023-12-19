@@ -1,7 +1,5 @@
 #ifndef CONTROLADORUSUARIO
 #define CONTROLADORUSUARIO
-#include <string>
-#include <iostream>
 #include "IControladorUsuario.h"
 #include "ManejadorUsuario.h"
 #include "Sesion.h"

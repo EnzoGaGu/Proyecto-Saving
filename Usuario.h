@@ -37,11 +37,11 @@ class Usuario{
         void setAdmin(bool admin);
         bool getAdmin();
         void addData(Data* data);
-        Data* findData(string idData);
-        bool memberData(string idData);
-        DtData* getDtData(string idData);
+        Data* findData(int idData);
+        bool memberData(int idData);
+        DtData* getDtData(int idData);
         list<DtData*> listData();
-        void removeData(string idData);
+        void removeData(int idData);
         ~Usuario();
 };
 

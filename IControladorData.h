@@ -1,5 +1,17 @@
 #ifndef ICONTROLADORDATA
 #define ICONTROLADORDATA
+#include <windows.h>
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <winbase.h>
+#include <list>
+#include <algorithm>
+#include "DtFechaHora.h"
+#include "enumTipoDato.h"
+#include "enumFuente.h"
+
+using namespace std; 
 
 class IControladorData{
     private:
