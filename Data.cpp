@@ -2,7 +2,7 @@
 
 Data::Data(){}
 
-Data::Data(int idData, Juego* juego, string nombreData, string directorioLocal, string directorioCloud, string comentariosJugador, DtFechaHora* fechaUltModificacion, EnumFuente plataformaFuente, EnumTipoDato tipoDato){
+Data::Data(int idData, Juego* juego, string nombreData, list<string> directorioLocal, string directorioCloud, string comentariosJugador, DtFechaHora* fechaUltModificacion, EnumFuente plataformaFuente, EnumTipoDato tipoDato){
     this->idData = idData;
     this->juego = juego;
     this->nombreData = nombreData;
@@ -38,16 +38,16 @@ void Data::setNombreData(string nombreData){
     this->nombreData = nombreData;
 }
 
-string Data::getDirectorioLocal(){
+list<string> Data::getDirectorioLocal(){
     return this->directorioLocal;
 }
 
-void Data::setDirectorioLocal(string directorioLocal){
+void Data::setDirectorioLocal(list<string> directorioLocal){
     this->directorioLocal = directorioLocal;
 }
 
 string Data::getDirectorioCloud(){
-    return this->directorioLocal;
+    return this->directorioCloud;
 }
 
 void Data::setDirectorioCloud(string directorioCloud){

@@ -60,6 +60,10 @@ void respaldarPartidaConReemplazo();
 void respaldarPartidaConHistorial();
 
 
+//Ver todas las partidas respaldadas por el usuario que inició sesión
+void verRespaldosPartida();
+
+
 //Comprobar si existe un archivo con el nombre "archivo" en la ruta "directorio".
 bool archivoExiste(const char* directorio, string archivo);
 
@@ -148,6 +152,7 @@ int main(){
                     case 5: 
                     break;
                     case 6: 
+                        verRespaldosPartida();
                     break;
                     case 7: 
                     break;
@@ -353,12 +358,15 @@ bool archivoExiste(const char* directorio, string archivo){
 
 void respaldarPartidaConReemplazo(){
     int idJuego;
-    int cont = 0; 
-    int opt; 
+    int cont; 
+    int opt = 0; 
     list<string> archivosEncontrados; 
     string archivoElegido = "";
     string directorioBackup = "";
+    string nombreData = "";
+    string comentariosJugador = "";
     string trash; 
+    bool success = false; 
     
     listarJuegos();
 
@@ -366,34 +374,49 @@ void respaldarPartidaConReemplazo(){
     cin >> idJuego;
 
     archivosEncontrados = iConD->encontrarArchivosPorJuego(idJuego);
-
-    for(const string archivo : archivosEncontrados){
-        cout << cont << "   =>" << archivo << endl; 
-        cont++; 
-    }
-    cout << "Inserte el número del archivo que quiere agregar al backup: ";
-    cin >> opt; 
-
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    bool success = false; 
 
-    while(success==false){
-        if (opt >= 0 && opt <= archivosEncontrados.size()) {
-            auto it = archivosEncontrados.begin();
-            advance(it, opt);  // Avanza al elemento seleccionado
+    cout << "Ingrese un nombre para el backup (opcional, deje en blanco para nombre genérico): ";
 
-            archivoElegido = *it;
-            cout << "Archivo elegido: " << archivoElegido << endl;
-            success = true; 
-        } else {
-            cout << "Opción no válida." << endl;
+    getline(cin, nombreData);
+
+    cout << "Ingrese un comentario para el backup (opcional): ";
+
+    getline(cin, comentariosJugador);
+
+    while(opt!=-1){
+        cont = 0; 
+        success = false; 
+        for(const string archivo : archivosEncontrados){
+            cout << cont << "   =>" << archivo << endl; 
+            cont++; 
+        }
+        cout << "Inserte el número de un archivo que quiere agregar al backup, o digite -1 para continuar: ";
+        cin >> opt; 
+
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        while(success==false){
+            if (opt >= 0 && opt <= archivosEncontrados.size()) {
+                auto it = archivosEncontrados.begin();
+                advance(it, opt);  // Avanza al elemento seleccionado
+
+                archivoElegido = *it;
+                cout << "Archivo elegido: " << archivoElegido << endl;
+                success = true; 
+            } 
+            else if(opt == -1){
+                success = true;
+            }
+            else {
+                cout << "Opción no válida." << endl;
+            }
+
         }
 
+        iConD->seleccionarDirectorioLocal(archivoElegido);
     }
-    
 
-    cout << "Archivo elegido: " << archivoElegido << endl;
-    iConD->seleccionarDirectorioLocal(archivoElegido);
 
     cout << "Ingrese la dirección de la carpeta que quiere usar como backup: ";
 
@@ -404,17 +427,24 @@ void respaldarPartidaConReemplazo(){
     iConD->crearCarpetaBackup(directorioBackup, idJuego, fechaHoraActual(), tipoDato, true);
 
     iConD->backupearDatos(true);
+
+    EnumFuente plataformaFuente = static_cast<EnumFuente>(0);
+
+    iConD->crearVirtualData(idJuego, nombreData, comentariosJugador, fechaHoraActual(), plataformaFuente, tipoDato);
 }
 
 
 void respaldarPartidaConHistorial(){
     int idJuego;
-    int cont = 0; 
-    int opt; 
+    int cont; 
+    int opt = 0; 
     list<string> archivosEncontrados; 
     string archivoElegido = "";
     string directorioBackup = "";
+    string nombreData = "";
+    string comentariosJugador = "";
     string trash; 
+    bool success = false; 
     
     listarJuegos();
 
@@ -422,34 +452,49 @@ void respaldarPartidaConHistorial(){
     cin >> idJuego;
 
     archivosEncontrados = iConD->encontrarArchivosPorJuego(idJuego);
-
-    for(const string archivo : archivosEncontrados){
-        cout << cont << "   =>" << archivo << endl; 
-        cont++; 
-    }
-    cout << "Inserte el número del archivo que quiere agregar al backup: ";
-    cin >> opt; 
-
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    bool success = false; 
 
-    while(success==false){
-        if (opt >= 0 && opt <= archivosEncontrados.size()) {
-            auto it = archivosEncontrados.begin();
-            advance(it, opt);  // Avanza al elemento seleccionado
+    cout << "Ingrese un nombre para el backup (opcional, deje en blanco para nombre genérico): ";
 
-            archivoElegido = *it;
-            cout << "Archivo elegido: " << archivoElegido << endl;
-            success = true; 
-        } else {
-            cout << "Opción no válida." << endl;
+    getline(cin, nombreData);
+
+    cout << "Ingrese un comentario para el backup (opcional): ";
+
+    getline(cin, comentariosJugador);
+
+    while(opt!=-1){
+        cont = 0; 
+        success = false; 
+        for(const string archivo : archivosEncontrados){
+            cout << cont << "   =>" << archivo << endl; 
+            cont++; 
+        }
+        cout << "Inserte el número de un archivo que quiere agregar al backup, o digite -1 para continuar: ";
+        cin >> opt; 
+
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        while(success==false){
+            if (opt >= 0 && opt <= archivosEncontrados.size()) {
+                auto it = archivosEncontrados.begin();
+                advance(it, opt);  // Avanza al elemento seleccionado
+
+                archivoElegido = *it;
+                cout << "Archivo elegido: " << archivoElegido << endl;
+                success = true; 
+            } 
+            else if(opt == -1){
+                success = true;
+            }
+            else {
+                cout << "Opción no válida." << endl;
+            }
+
         }
 
+        iConD->seleccionarDirectorioLocal(archivoElegido);
     }
-    
 
-    cout << "Archivo elegido: " << archivoElegido << endl;
-    iConD->seleccionarDirectorioLocal(archivoElegido);
 
     cout << "Ingrese la dirección de la carpeta que quiere usar como backup: ";
 
@@ -459,7 +504,29 @@ void respaldarPartidaConHistorial(){
 
     iConD->crearCarpetaBackup(directorioBackup, idJuego, fechaHoraActual(), tipoDato, false);
 
-    iConD->backupearDatos(true);
+    iConD->backupearDatos(false);
+
+    EnumFuente plataformaFuente = static_cast<EnumFuente>(0);
+
+    iConD->crearVirtualData(idJuego, nombreData, comentariosJugador, fechaHoraActual(), plataformaFuente, tipoDato);
+}
+
+void verRespaldosPartida(){
+    EnumTipoDato tipoDato = static_cast<EnumTipoDato>(0); 
+
+    list<DtData*> partidas = iConD->verVirtualData(tipoDato);
+
+    if(!partidas.empty()){
+        list<DtData*>::iterator it; 
+        for(it=partidas.begin();it!=partidas.end(); it++){
+            cout << "================================================" << endl;
+            cout << (*(*it));
+            cout << "================================================" << endl;
+        }
+    }
+    else{
+        cout << "El usuario no tiene partidas registradas" << endl; 
+    }
 }
 
 

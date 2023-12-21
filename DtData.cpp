@@ -2,7 +2,7 @@
 
 DtData::DtData(){}
 
-DtData::DtData(int idData, Juego* juego, string nombreData, string directorioLocal, string directorioCloud, string comentariosJugador, DtFechaHora* fechaUltModificacion, EnumFuente plataformaFuente, EnumTipoDato tipoDato){
+DtData::DtData(int idData, Juego* juego, string nombreData, list<string> directorioLocal, string directorioCloud, string comentariosJugador, DtFechaHora* fechaUltModificacion, EnumFuente plataformaFuente, EnumTipoDato tipoDato){
     this->idData = idData;
     this->juego = juego;
     this->nombreData = nombreData;
@@ -26,12 +26,12 @@ string DtData::getNombreData(){
     return this->nombreData;
 }
 
-string DtData::getDirectorioLocal(){
+list<string> DtData::getDirectorioLocal(){
     return this->directorioLocal;
 }
 
 string DtData::getDirectorioCloud(){
-    return this->directorioLocal;
+    return this->directorioCloud;
 }
 
 string DtData::getComentariosJugador(){
@@ -51,3 +51,25 @@ EnumTipoDato DtData::getTipoDato(){
 }
 
 DtData::~DtData(){}
+
+
+
+ostream& operator <<(ostream& salida,const DtData& a) {
+	cout << "ID: " << a.idData << endl;
+    cout << "Nombre: " << a.nombreData << endl; 
+    cout << "Nombre del juego: " << a.juego->getNombre() << endl;
+    cout << "Comentarios del jugador: " << a.comentariosJugador << endl;
+    cout << "Plataforma de los datos: " << a.plataformaFuente << endl; 
+    cout << "Tipo de datos: " << a.tipoDato << endl; 
+
+
+    cout << "Directorio local de los archivos: " << endl; 
+    for(const string directorio : a.directorioLocal){
+        cout << "   =>" << directorio << endl; 
+    }
+
+    cout << "Directorio del backup: " << a.directorioCloud << endl;
+    cout << "Fecha de creación/última modificación: " << (*a.fechaUltModificacion) << endl; 
+
+	return salida;
+}

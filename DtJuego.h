@@ -28,7 +28,7 @@ class DtJuego{
         list<string> getDirectoriosData();
         ~DtJuego();
 
-        friend ostream& operator <<(ostream&,const DtJuego&);//sobrecarga de << , para mostrar la clase DtFechaHora
+        friend ostream& operator <<(ostream&,const DtJuego&);//sobrecarga de <<
 };
 
 #endif

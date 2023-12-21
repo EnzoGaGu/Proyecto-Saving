@@ -67,13 +67,9 @@ string ControladorData::encontrarArchivo(string directorio, string archivo){
 void ControladorData::seleccionarDirectorioLocal(string seleccionado){
     string directorioLocal, nombreArchivo; 
 
-    cout << seleccionado;
-
     const char *ruta = seleccionado.c_str();
 
     char *ultimoSeparador = strrchr(ruta, '/');
-
-    cout << *ruta; 
 
     if(ultimoSeparador != NULL){
         int posicionSeparador = ultimoSeparador - seleccionado.c_str();
@@ -93,9 +89,9 @@ void ControladorData::seleccionarDirectorioLocal(string seleccionado){
 
         string nombreA(nombreArchivo);
 
-        this->directorioLocal = directorio;
-        this->nombreArchivo = nombreA;
-
+        this->directorioLocal.push_back(directorio);
+        this->nombreArchivo.push_back(nombreA);
+        this->directorioLocalCompleto.push_back(seleccionado);
     }
     else{
         cout << "La ruta no contiene un separador válido" << endl; 
@@ -174,35 +170,47 @@ void ControladorData::crearCarpetaBackup(string directorioBackup, int idJuego, D
 //Tiene en cuenta si el usuario quiere reemplazar o no.
 void ControladorData::backupearDatos(bool conReemplazo){
 
-    if(conReemplazo){
-        fs::remove(this->directorioBackup + "/" + this->nombreArchivo);
-        //fs::create_directory(this->directorioBackup);
-        cout << directorioBackup;
-    }
+    list<string>::iterator it = this->nombreArchivo.begin();
 
-    //replace(directorioBackup.begin(), directorioBackup.end(), '\\', '/');
+    for(const string directorio : this->directorioLocal){
 
-    string ogPath = this->directorioLocal + "/" + this->nombreArchivo;
-    string newPath = this->directorioBackup + "/" + this->nombreArchivo;
 
-    ifstream ogFile(ogPath, ios::binary);
+        if(conReemplazo){
+            fs::remove(this->directorioBackup + "/" + *it);
+            //fs::create_directory(this->directorioBackup);
+        }
 
-    if(!ogFile){
-        cerr << "Error al abrir el archivo a backupear." << endl; 
-    }
-    else{
-        ofstream newFile(newPath, ios::binary);
-        if(!newFile){
-            cerr << "Error al crear el archivo backup." << endl;
+        //replace(directorioBackup.begin(), directorioBackup.end(), '\\', '/');
+
+        string ogPath = directorio + "/" + *it;
+        string newPath = this->directorioBackup + "/" + *it;
+
+        ifstream ogFile(ogPath, ios::binary);
+
+        if(!ogFile){
+            cerr << "Error al abrir el archivo a backupear." << endl; 
         }
         else{
-            newFile << ogFile.rdbuf();
-            ogFile.close();
-            newFile.close();
+            ofstream newFile(newPath, ios::binary);
+            if(!newFile){
+                cerr << "Error al crear el archivo backup." << endl;
+            }
+            else{
+                newFile << ogFile.rdbuf();
+                ogFile.close();
+                newFile.close();
 
-            cout << "Archivo copiado exitosamente." << endl; 
+                cout << "Archivo copiado exitosamente." << endl; 
+            }
         }
+
+        if(it!=this->nombreArchivo.end()){
+            advance(it, 1);
+        }
+
+        //cout << *it; 
     }
+
 }
 
 //Crea un objeto de clase Data, y lo almacena en el usuario que inició sesión
@@ -211,20 +219,62 @@ void ControladorData::crearVirtualData(int idJuego, string nombreData, string co
 
     Juego* juego = mj->find(idJuego);
     int idData; 
+    bool encontrado; 
 
     Sesion* sesion = Sesion::getSesion();
     Usuario* user = sesion->getUsuario();
+    list<DtData*> userData = user->listData();
 
-    if(!user->listData().empty()){
-        idData = user->listData().back()->getIdData() + 1;
+    if(!userData.empty()){
+        list<DtData*>::iterator it; 
+        for(it=userData.begin(); it!=userData.end(); it++){
+            if(this->directorioBackup == (*it)->getDirectorioCloud()){
+                user->findData((*it)->getIdData())->setFechaUltModificacion(fechaCreacionData);
+
+                encontrado = true; 
+            }
+        }
+        if(!encontrado){
+            idData = user->listData().back()->getIdData() + 1;
+        }
     }
     else{
         idData = 0; 
     }
 
-    Data* newData = new Data(idData, juego, nombreData, this->directorioLocal, this->directorioBackup, comentariosJugador, fechaCreacionData, plataforma, tipoDato);
 
-    user->addData(newData);
+
+    if(!encontrado){
+        Data* newData = new Data(idData, juego, nombreData, this->directorioLocalCompleto, this->directorioBackup, comentariosJugador, fechaCreacionData, plataforma, tipoDato);
+        user->addData(newData);
+    }
+    
+    this->directorioBackup.clear();
+    this->directorioLocal.clear();
+    this->directorioLocalCompleto.clear();
+}
+
+
+list<DtData*> ControladorData::verVirtualData(EnumTipoDato tipoDato){
+    Sesion* sesion = Sesion::getSesion();
+    Usuario* user = sesion->getUsuario();
+
+    list<DtData*> allData = user->listData();
+
+    list<DtData*> selectedData; 
+
+    list<DtData*>::iterator it; 
+    for(it=allData.begin();it!=allData.end(); it++){
+        if((*it)->getTipoDato() == tipoDato){
+            cout << "Tipo de dato en user: " << (*it)->getTipoDato() << endl;
+            cout << "Tipo de dato dado: " << tipoDato << endl; 
+            cout << (*(*it)); 
+
+            selectedData.push_back((*it));
+        }
+    }
+
+    return selectedData;
 }
 
 ControladorData::~ControladorData(){}

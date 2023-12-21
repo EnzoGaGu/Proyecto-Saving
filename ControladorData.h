@@ -19,8 +19,9 @@ using namespace std;
 class ControladorData : public IControladorData{
     private:
         string idData;
-        string nombreArchivo;
-        string directorioLocal;
+        list<string> nombreArchivo;
+        list<string> directorioLocal;
+        list<string> directorioLocalCompleto; 
         string directorioBackup;
         Data* newData;
     public:
@@ -31,6 +32,7 @@ class ControladorData : public IControladorData{
         void crearCarpetaBackup(string directorioBackup, int idJuego, DtFechaHora* fecha, EnumTipoDato tipoDato, bool conReemplazo);
         void backupearDatos(bool conReemplazo);
         void crearVirtualData(int idJuego, string nombreData, string comentariosJugador, DtFechaHora* fechaCreacionData, EnumFuente plataforma, EnumTipoDato tipoDato);
+        list<DtData*> verVirtualData(EnumTipoDato tipoDato);
         ~ControladorData();
 };
 

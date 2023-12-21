@@ -13,7 +13,7 @@ class Data{
         int idData;                                             //Identificador de la partida. Para separar las diferentes versiones de una misma
         Juego* juego; 
         string nombreData;
-        string directorioLocal;                                       //Dirección del archivo en el sistema
+        list<string> directorioLocal;                                       //Dirección del archivo en el sistema
         string directorioCloud;
         string comentariosJugador;
         DtFechaHora* fechaUltModificacion; 
@@ -21,15 +21,15 @@ class Data{
         EnumTipoDato tipoDato;
     public:
         Data();
-        Data(int idData, Juego* juego, string nombreData, string directorioLocal, string directorioCloud, string comentariosJugador, DtFechaHora* fechaUltModificacion, EnumFuente plataformaFuente, EnumTipoDato tipoDato);
+        Data(int idData, Juego* juego, string nombreData, list<string> directorioLocal, string directorioCloud, string comentariosJugador, DtFechaHora* fechaUltModificacion, EnumFuente plataformaFuente, EnumTipoDato tipoDato);
         int getIdData();
         void setIdData(int idData);
         Juego* getJuego();
         void setJuego(Juego* juego);
         string getNombreData();
         void setNombreData(string nombreData);
-        string getDirectorioLocal();
-        void setDirectorioLocal(string directorioLocal);
+        list<string> getDirectorioLocal();
+        void setDirectorioLocal(list<string> directorioLocal);
         string getDirectorioCloud();
         void setDirectorioCloud(string directorioCloud);
         string getComentariosJugador();

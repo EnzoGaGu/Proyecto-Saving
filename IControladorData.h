@@ -10,6 +10,7 @@
 #include "DtFechaHora.h"
 #include "enumTipoDato.h"
 #include "enumFuente.h"
+#include "DtData.h"
 
 using namespace std; 
 
@@ -22,6 +23,7 @@ class IControladorData{
         virtual void crearCarpetaBackup(string directorioBackup, int idJuego, DtFechaHora* fecha, EnumTipoDato tipoDato, bool conReemplazo) = 0;
         virtual void backupearDatos(bool conReemplazo) = 0;
         virtual void crearVirtualData(int idJuego, string nombreData, string comentariosJugador, DtFechaHora* fechaCreacionData, EnumFuente plataforma, EnumTipoDato tipoDato) = 0;
+        virtual list<DtData*> verVirtualData(EnumTipoDato tipoDato) = 0;
 };
 
 #endif
