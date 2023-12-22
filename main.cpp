@@ -117,7 +117,6 @@ int main(){
         while(salir == false){
             if(!sesion->getUsuario()->getAdmin()){                                          //Si es usuario normal
                 cout << "================================================" << endl;
-                //cout << "   1: Agregar juego" << endl;
                 cout << "   1: Respaldar partidas" << endl;
                 cout << "   2: Respaldar configuraciones" << endl;
                 cout << "   3: Comprobar si respalo está up-to-date" << endl;
