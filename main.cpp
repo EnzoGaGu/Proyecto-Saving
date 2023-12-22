@@ -52,12 +52,8 @@ void Registro();
 void agregarJuegoAlSistema();
 
 
-//Respaldar una partida. Si ya existe un archivo con el mismo nombre en la carpeta backup, el sistema lo elimina y reemplaza por el nuevo.
-void respaldarPartidaConReemplazo();
-
-
-//Respaldar una partida. Crea una carpeta nueva por backup
-void respaldarPartidaConHistorial();
+//Respaldar una partida.
+void respaldarPartida();
 
 
 //Ver todas las partidas respaldadas por el usuario que inició sesión
@@ -122,37 +118,35 @@ int main(){
             if(!sesion->getUsuario()->getAdmin()){                                          //Si es usuario normal
                 cout << "================================================" << endl;
                 //cout << "   1: Agregar juego" << endl;
-                cout << "   1: Respaldar partidas guardadas reemplazando" << endl;
-                cout << "   2: Respaldar partidas guardadas con historial" << endl;
-                cout << "   3: Respaldar configuraciones" << endl;
-                cout << "   4: Comprobar si respalo está up-to-date" << endl;
-                cout << "   5: Ver juegos agregados" << endl;
-                cout << "   6: Ver respaldos de partidas" << endl;
-                cout << "   7: Ver respaldos de configuraciones" << endl;
-                cout << "   8: Ver respaldos" << endl;
-                cout << "   9: Subir a la nube" << endl;
-                cout << "   10: Descargar de la nube" << endl;
-                cout << "   11: Actualizar rutas juego" << endl;
-                cout << "   12: Cambiar usuario" << endl;
+                cout << "   1: Respaldar partidas" << endl;
+                cout << "   2: Respaldar configuraciones" << endl;
+                cout << "   3: Comprobar si respalo está up-to-date" << endl;
+                cout << "   4: Ver juegos agregados" << endl;
+                cout << "   5: Ver respaldos de partidas" << endl;
+                cout << "   6: Ver respaldos de configuraciones" << endl;
+                cout << "   7: Ver respaldos" << endl;
+                cout << "   8: Subir a la nube" << endl;
+                cout << "   9: Descargar de la nube" << endl;
+                cout << "   10: Actualizar rutas juego" << endl;
+                cout << "   11: Cambiar usuario" << endl;
                 cout << "   0: Salir"   << endl;
                 cout << "Ingrese una opción: " << endl;
                 cin >> opt; 
 
                 switch(opt){
                     case 1: 
-                        respaldarPartidaConReemplazo();
+                        respaldarPartida();
                     break;
                     case 2: 
-                        respaldarPartidaConHistorial();
                     break;
                     case 3: 
                     break;
                     case 4: 
                     break;
                     case 5: 
+                        verRespaldosPartida();
                     break;
                     case 6: 
-                        verRespaldosPartida();
                     break;
                     case 7: 
                     break;
@@ -356,7 +350,7 @@ bool archivoExiste(const char* directorio, string archivo){
     return existe; 
 }
 
-void respaldarPartidaConReemplazo(){
+void respaldarPartida(){
     int idJuego;
     int cont; 
     int opt = 0; 
@@ -367,6 +361,7 @@ void respaldarPartidaConReemplazo(){
     string comentariosJugador = "";
     string trash; 
     bool success = false; 
+    bool conReemplazo;
     
     listarJuegos();
 
@@ -423,88 +418,31 @@ void respaldarPartidaConReemplazo(){
     getline(cin, directorioBackup);
 
     EnumTipoDato tipoDato = static_cast<EnumTipoDato>(0);
+    bool exito = false; 
 
-    iConD->crearCarpetaBackup(directorioBackup, idJuego, fechaHoraActual(), tipoDato, true);
-
-    iConD->backupearDatos(true);
-
-    EnumFuente plataformaFuente = static_cast<EnumFuente>(0);
-
-    iConD->crearVirtualData(idJuego, nombreData, comentariosJugador, fechaHoraActual(), plataformaFuente, tipoDato);
-}
-
-
-void respaldarPartidaConHistorial(){
-    int idJuego;
-    int cont; 
-    int opt = 0; 
-    list<string> archivosEncontrados; 
-    string archivoElegido = "";
-    string directorioBackup = "";
-    string nombreData = "";
-    string comentariosJugador = "";
-    string trash; 
-    bool success = false; 
-    
-    listarJuegos();
-
-    cout << "Inserte el ID del juego al que pertenece la partida: ";
-    cin >> idJuego;
-
-    archivosEncontrados = iConD->encontrarArchivosPorJuego(idJuego);
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-    cout << "Ingrese un nombre para el backup (opcional, deje en blanco para nombre genérico): ";
-
-    getline(cin, nombreData);
-
-    cout << "Ingrese un comentario para el backup (opcional): ";
-
-    getline(cin, comentariosJugador);
-
-    while(opt!=-1){
-        cont = 0; 
-        success = false; 
-        for(const string archivo : archivosEncontrados){
-            cout << cont << "   =>" << archivo << endl; 
-            cont++; 
-        }
-        cout << "Inserte el número de un archivo que quiere agregar al backup, o digite -1 para continuar: ";
+    while(!exito){
+        opt = 0; 
+        cout << "   1-Partida con historial" << endl; 
+        cout << "   2-Partida sin historial" << endl;
+        cout << "Ingrese una opción: ";
         cin >> opt; 
 
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-        while(success==false){
-            if (opt >= 0 && opt <= archivosEncontrados.size()) {
-                auto it = archivosEncontrados.begin();
-                advance(it, opt);  // Avanza al elemento seleccionado
-
-                archivoElegido = *it;
-                cout << "Archivo elegido: " << archivoElegido << endl;
-                success = true; 
-            } 
-            else if(opt == -1){
-                success = true;
-            }
-            else {
-                cout << "Opción no válida." << endl;
-            }
-
+        if(opt == 1){
+            conReemplazo = false; 
+            exito = true; 
         }
-
-        iConD->seleccionarDirectorioLocal(archivoElegido);
+        else if(opt == 2){
+            conReemplazo = true; 
+            exito = true;
+        }
+        else{
+            cout << "Opción no reconocida. Reintente" << endl; 
+        }
     }
 
+    iConD->crearCarpetaBackup(directorioBackup, idJuego, fechaHoraActual(), tipoDato, conReemplazo);
 
-    cout << "Ingrese la dirección de la carpeta que quiere usar como backup: ";
-
-    getline(cin, directorioBackup);
-
-    EnumTipoDato tipoDato = static_cast<EnumTipoDato>(0);
-
-    iConD->crearCarpetaBackup(directorioBackup, idJuego, fechaHoraActual(), tipoDato, false);
-
-    iConD->backupearDatos(false);
+    iConD->backupearDatos(conReemplazo);
 
     EnumFuente plataformaFuente = static_cast<EnumFuente>(0);
 

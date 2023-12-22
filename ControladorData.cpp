@@ -113,6 +113,7 @@ void ControladorData::crearCarpetaBackup(string directorioBackup, int idJuego, D
     string reem = directorioJuego + "/Reemplazo";
     string noReem = directorioJuego + "/SinReemplazo"; 
     string directorioCompleto; 
+    string folder;
     bool exit = false;
     int count = 0; 
 
@@ -122,47 +123,48 @@ void ControladorData::crearCarpetaBackup(string directorioBackup, int idJuego, D
                 fs::create_directory(directorioJuego.c_str());
 
                 fs::create_directory(reem.c_str());
-                fs::create_directory(noReem.c_str());             
+                fs::create_directory(noReem.c_str());          
             }
             else{
                 cout << "La carpeta de backup para este juego ya existe. Continuando." << endl; 
             }
-
-            if(!conReemplazo){
-
-                if(fs::is_empty(noReem)){
-                    directorioCompleto = noReem + "/0";
-
-                    fs::create_directory(directorioCompleto.c_str());
-                }
-                else{
-                    fs::path p1 { noReem };
-
-                    for (auto& p : fs::directory_iterator(p1))
-                    {
-                        ++count;
-                    }
-
-                    string folder = "/" + count;
-
-
-                    directorioCompleto = noReem + folder; 
-                }
-
-                fs::create_directory(directorioCompleto.c_str());
-                this->directorioBackup = directorioCompleto;
-                exit = true; 
-            }
-            else{
-                this->directorioBackup = reem.c_str();
-                exit = true; 
-            }
+            exit = true;
         }
         else{
             fs::create_directory(directorioBackup.c_str());
         }
     }
     
+
+    if(!conReemplazo){
+        if(fs::is_empty(noReem)){
+            directorioCompleto = noReem + "/0";
+
+            fs::create_directory(directorioCompleto.c_str());
+        }
+        else{
+            fs::path p1 { noReem };
+
+            for (auto& p : fs::directory_iterator(p1))
+            {
+                ++count;
+            }
+            cout << "Cantidad de carpetas: " << count << endl; 
+            string countS = to_string(count);
+            folder = "/" + countS;
+            cout << folder << endl; 
+
+            directorioCompleto = noReem + folder; 
+            cout << directorioCompleto << endl; 
+            fs::create_directory(directorioCompleto.c_str());
+        }
+
+        //fs::create_directory(directorioCompleto.c_str());
+        this->directorioBackup = directorioCompleto; 
+    }
+    else{
+        this->directorioBackup = reem.c_str();
+    }
 }
 
 
@@ -249,9 +251,10 @@ void ControladorData::crearVirtualData(int idJuego, string nombreData, string co
         user->addData(newData);
     }
     
-    this->directorioBackup.clear();
+    this->directorioBackup = "";
     this->directorioLocal.clear();
     this->directorioLocalCompleto.clear();
+    this->nombreArchivo.clear();
 }
 
 
@@ -266,10 +269,6 @@ list<DtData*> ControladorData::verVirtualData(EnumTipoDato tipoDato){
     list<DtData*>::iterator it; 
     for(it=allData.begin();it!=allData.end(); it++){
         if((*it)->getTipoDato() == tipoDato){
-            cout << "Tipo de dato en user: " << (*it)->getTipoDato() << endl;
-            cout << "Tipo de dato dado: " << tipoDato << endl; 
-            cout << (*(*it)); 
-
             selectedData.push_back((*it));
         }
     }
