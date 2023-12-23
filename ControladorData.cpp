@@ -99,10 +99,28 @@ void ControladorData::seleccionarDirectorioLocal(string seleccionado){
     }
 }
 
+//Comprueba si el nombre dado ya fue utilizado en otro backup del mismo usuario.
+bool ControladorData::disponibilidadNombreData(string nombreData){
+    bool disponible = true; 
+    
+    Sesion* sesion = Sesion::getSesion();
+    Usuario* user = sesion->getUsuario();
+
+    list<DtData*> data = user->listData();
+    if(!data.empty()){
+        list<DtData*>::iterator it; 
+        for(it=data.begin();it!=data.end(); it++){
+            if((*it)->getNombreData() == nombreData){
+                disponible = false; 
+            }
+        }
+    }
+    return disponible; 
+}
 
 //Comprueba si las carpetas necesarias para realizar el backup existen en la ruta dada por el usuario, y guarda la dirección en el controlador. Si éstas no están presentes, las crea.
 //Tiene en cuenta si el usuario está queriendo hacer un backup con o sin historial.
-void ControladorData::crearCarpetaBackup(string directorioBackup, int idJuego, DtFechaHora* fecha, EnumTipoDato tipoDato, bool conReemplazo){
+void ControladorData::crearCarpetaBackup(string directorioBackup, int idJuego, string nombreData, bool conReemplazo){
     struct stat sb;
     ManejadorJuego* mj = ManejadorJuego::getInstancia();
 

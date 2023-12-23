@@ -53,6 +53,7 @@ DtData* DtUsuario::findData(int idData){
     else{
         return NULL;
     }
+    return NULL;
 }
 
 bool DtUsuario::memberData(int idData){

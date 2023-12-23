@@ -29,7 +29,8 @@ class ControladorData : public IControladorData{
         list<string> encontrarArchivosPorJuego(int idJuego);
         string encontrarArchivo(string directorio, string archivo);
         void seleccionarDirectorioLocal(string seleccionado);
-        void crearCarpetaBackup(string directorioBackup, int idJuego, DtFechaHora* fecha, EnumTipoDato tipoDato, bool conReemplazo);
+        bool disponibilidadNombreData(string nombreData);
+        void crearCarpetaBackup(string directorioBackup, int idJuego, string nombreData, bool conReemplazo);
         void backupearDatos(bool conReemplazo);
         void crearVirtualData(int idJuego, string nombreData, string comentariosJugador, DtFechaHora* fechaCreacionData, EnumFuente plataforma, EnumTipoDato tipoDato);
         list<DtData*> verVirtualData(EnumTipoDato tipoDato);

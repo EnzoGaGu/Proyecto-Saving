@@ -14,6 +14,7 @@ class ControladorUsuario: public IControladorUsuario{
         void iniciarSesion(string nick, string pass);
         void registro(string nick, string nombre, string pass, string email, string pfp);
         void modificarUsuario(string nick, string nombre, string pass, string email, string pfp);
+        DtUsuario* getDtUsuarioActual();
         ~ControladorUsuario();
 };
 

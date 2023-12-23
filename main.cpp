@@ -375,10 +375,21 @@ void respaldarPartida(){
 
     archivosEncontrados = iConD->encontrarArchivosPorJuego(idJuego);
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    
+    
+    while(success == false){
+        cout << "Ingrese un nombre para el backup: ";
 
-    cout << "Ingrese un nombre para el backup (opcional, deje en blanco para nombre genérico): ";
+        getline(cin, nombreData);
 
-    getline(cin, nombreData);
+        if(!iConD->disponibilidadNombreData(nombreData)){
+            cout << "Ya existe un backup con el nombre dado. Reintente" << endl;
+        }
+        else{
+            success = true; 
+        }
+    }
+    success = false; 
 
     cout << "Ingrese un comentario para el backup (opcional): ";
 
@@ -447,7 +458,7 @@ void respaldarPartida(){
         }
     }
 
-    iConD->crearCarpetaBackup(directorioBackup, idJuego, fechaHoraActual(), tipoDato, conReemplazo);
+    iConD->crearCarpetaBackup(directorioBackup, idJuego, nombreData, conReemplazo);
 
     iConD->backupearDatos(conReemplazo);
 
@@ -535,8 +546,7 @@ void precargarDatos(){
 
     list<string> directorios;
     list<string> archivos;
-
-    string direc1 = "/Documents";
+    string carpetaUsuario; 
 
     PWSTR path;
     if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_Profile, 0, NULL, &path))) {
@@ -556,14 +566,15 @@ void precargarDatos(){
     
         replace(userPath.begin(), userPath.end(), '\\', '/');
 
-        directorios.push_back(userPath + direc1);
-        directorios.push_back(userPath + "/Documents/GTA San Andreas User Files");
-
+        carpetaUsuario = userPath;
         //cout << userPath << "/Documents/GTA San Andreas User Files"; 
         CoTaskMemFree(static_cast<void*>(path));
     } else {
         cerr << "Error getting user folder." << endl;
     }
+
+    directorios.push_back(carpetaUsuario + "/Documents");
+    directorios.push_back(carpetaUsuario + "/Documents/GTA San Andreas User Files");
 
     archivos.push_back("GTASAsf1.b");
     archivos.push_back("GTASAsf2.b");
@@ -575,6 +586,17 @@ void precargarDatos(){
     archivos.push_back("GTASAsf8.b");
 
     iConJ->recopilarDatos("GTA San Andreas", plataforma, "google.com", "GTA game", archivos, directorios);
+    iConJ->agregarJuego();
+
+    directorios.clear();
+    archivos.clear();
+
+    directorios.push_back(carpetaUsuario + "/Documents/My Games/HotlineMiami");
+
+    archivos.push_back("SaveData.sav");
+    archivos.push_back("hotline.cfg");
+
+    iConJ->recopilarDatos("Hotline Miami", plataforma, "google.com", "GOTY", archivos, directorios);
     iConJ->agregarJuego();
 }
 
