@@ -68,6 +68,9 @@ bool archivoExiste(const char* directorio, string archivo);
 void listarJuegos();
 
 
+//Lista los juegos para los que el usuario tiene algún backup en el sistema. Si un admin ejecuta esta función, puede ver los juegos registrados de otros usuarios.
+void verJuegosPorUsuario();
+
 //Devuelve un DtFechaHora con los datos del momento en el que se llamó la función
 DtFechaHora* fechaHoraActual();
 
@@ -141,6 +144,7 @@ int main(){
                     case 3: 
                     break;
                     case 4: 
+                        verJuegosPorUsuario();
                     break;
                     case 5: 
                         verRespaldosPartida();
@@ -172,9 +176,10 @@ int main(){
                 cout << "================================================" << endl;
                 cout << "   1: Agregar juego al sistema" << endl;
                 cout << "   2: Ver juegos en el sistema" << endl;
-                cout << "   3: Modificar datos juego" << endl;
-                cout << "   4: Ver usuarios" << endl;
-                cout << "   5: Cambiar usuario" << endl;
+                cout << "   3: Ver juegos por usuario" << endl;
+                cout << "   4: Modificar datos juego" << endl;
+                cout << "   5: Ver usuarios" << endl;
+                cout << "   6: Cambiar usuario" << endl;
                 cout << "   0: Salir"   << endl;
                 cout << "Ingrese una opción: " << endl;
                 cin >> opt; 
@@ -187,6 +192,7 @@ int main(){
                         listarJuegos();
                     break;
                     case 3: 
+                        verJuegosPorUsuario();
                     break;
                     case 4: 
                     break;
@@ -408,7 +414,9 @@ void respaldarPartida(){
 
         }
 
-        iConD->seleccionarDirectorioLocal(archivoElegido);
+        if(opt != -1){
+            iConD->seleccionarDirectorioLocal(archivoElegido);
+        }
     }
 
 
@@ -478,6 +486,32 @@ void listarJuegos(){
     }
 }
 
+void verJuegosPorUsuario(){
+    DtUsuario* user = iConU->getDtUsuarioActual();
+    list<DtJuego*> juegos; 
+    if(user->getAdmin()){
+        string nick;
+        cout << "Inserte el nick del usuario del que quiere ver los datos: ";
+        getline(cin, nick);
+
+        juegos = iConJ->verJuegosBackupeadosPorJugador(nick);
+    }
+    else{
+        juegos = iConJ->verJuegosBackupeadosPorJugador(user->getNick());
+    }
+
+    if(!juegos.empty()){
+        list<DtJuego*>::iterator it;
+        for(it = juegos.begin(); it!= juegos.end(); it++){
+            cout << "================================================" << endl;
+            cout << (*(*it));
+            cout << "================================================" << endl;
+        }
+    }
+    else{
+        cout << "El usuario no tiene ningún backup creado." << endl; 
+    }
+}
 
 //Fecha y hora actual
 DtFechaHora* fechaHoraActual(){
@@ -506,7 +540,7 @@ void precargarDatos(){
 
     PWSTR path;
     if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_Profile, 0, NULL, &path))) {
-        std::wcout << L"User folder: " << path << std::endl;
+        wcout << L"User folder: " << path << endl;
 
         //wstring userFolder(path);
 
@@ -528,7 +562,7 @@ void precargarDatos(){
         //cout << userPath << "/Documents/GTA San Andreas User Files"; 
         CoTaskMemFree(static_cast<void*>(path));
     } else {
-        std::cerr << "Error getting user folder." << std::endl;
+        cerr << "Error getting user folder." << endl;
     }
 
     archivos.push_back("GTASAsf1.b");

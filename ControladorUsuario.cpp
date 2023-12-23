@@ -48,4 +48,13 @@ void ControladorUsuario::modificarUsuario(string nick, string nombre, string pas
     
 }
 
+DtUsuario* ControladorUsuario::getDtUsuarioActual(){
+    Sesion* sesion = Sesion::getSesion();
+    Usuario* user = sesion->getUsuario();
+
+    DtUsuario* DtU = new DtUsuario(user->getNick(), user->getNombre(), user->getPass(), user->getEmail(), user->getPfp(), user->getFechaInsc(), user->getAdmin(), user->listData());
+
+    return DtU;
+}
+
 ControladorUsuario::~ControladorUsuario(){}

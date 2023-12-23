@@ -2,7 +2,7 @@
 
 DtUsuario::DtUsuario(){}
 
-DtUsuario::DtUsuario(string nick, string nombre, string pass, string email, string pfp, DtFechaHora* fechaInsc, bool admin){
+DtUsuario::DtUsuario(string nick, string nombre, string pass, string email, string pfp, DtFechaHora* fechaInsc, bool admin, list<DtData*> dataAgregada){
     this->nick = nick;
     this->nombre = nombre;
     this->pass = pass;
@@ -10,6 +10,7 @@ DtUsuario::DtUsuario(string nick, string nombre, string pass, string email, stri
     this->pfp = pfp; 
     this->fechaInsc = fechaInsc; 
     this->admin = admin;
+    this->dataAgregada = dataAgregada;
 }
 
 string DtUsuario::getNick(){
@@ -40,9 +41,9 @@ bool DtUsuario::getAdmin(){
     return this->admin;
 }
 
-Data* DtUsuario::findData(string idData){
+DtData* DtUsuario::findData(int idData){
     if(memberData(idData) == true){
-        list<Data*>::iterator it;
+        list<DtData*>::iterator it;
         for(it=this->dataAgregada.begin(); it!=this->dataAgregada.end(); it++){
             if((*it)->getIdData() == idData){
                 return (*it);
@@ -54,10 +55,10 @@ Data* DtUsuario::findData(string idData){
     }
 }
 
-bool DtUsuario::memberData(string idData){
+bool DtUsuario::memberData(int idData){
     bool exists = false;
 
-    list<Data*>::iterator it;
+    list<DtData*>::iterator it;
     for(it=this->dataAgregada.begin(); it!=this->dataAgregada.end(); it++){
         if((*it)->getIdData() == idData){
             exists = true;
@@ -66,30 +67,8 @@ bool DtUsuario::memberData(string idData){
     return exists;
 }
 
-DtData* DtUsuario::getDtData(string idData){
-    Data* data = findData(idData);
-    DtData* dtData; 
-
-    if(data!=NULL){
-        dtData = new DtData(data->getIdData(), data->getJuego(), data->getNombreData(), data->getDirectorioLocal(), data->getDirectorioCloud(), data->getComentariosJugador(), data->getFechaUltModificacion(), data->getPlataformaFuente(), data->getTipoDato());
-    }
-    else{
-        dtData = NULL;
-    }
-
-    return dtData;
-}
-
 list<DtData*> DtUsuario::listData(){
-    list<DtData*> lista;
-
-    list<Data*>::iterator it;
-    for(it=this->dataAgregada.begin(); it!=this->dataAgregada.end(); it++){
-        DtData* data = new DtData((*it)->getIdData(), (*it)->getJuego(), (*it)->getNombreData(), (*it)->getDirectorioLocal(), (*it)->getDirectorioCloud(), (*it)->getComentariosJugador(), (*it)->getFechaUltModificacion(), (*it)->getPlataformaFuente(), (*it)->getTipoDato());
-        lista.push_back(data);
-    }
-
-    return lista;
+    return this->dataAgregada;
 }
 
 DtUsuario::~DtUsuario(){}

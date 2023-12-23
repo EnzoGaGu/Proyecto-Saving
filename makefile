@@ -1,4 +1,4 @@
-principal: DtFechaHora.o DtJuego.o DtData.o Usuario.o Sesion.o Juego.o Data.o Configuracion.o ManejadorUsuario.o ManejadorJuego.o ControladorUsuario.o ControladorJuego.o ControladorData.o Fabrica.o main.o
+makeprincipal: DtFechaHora.o DtJuego.o DtData.o Usuario.o Sesion.o Juego.o Data.o Configuracion.o ManejadorUsuario.o ManejadorJuego.o ControladorUsuario.o ControladorJuego.o ControladorData.o Fabrica.o main.o
 	g++ DtFechaHora.o DtJuego.o DtData.o Usuario.o Sesion.o Juego.o Data.o Configuracion.o ManejadorUsuario.o ManejadorJuego.o ControladorUsuario.o ControladorJuego.o ControladorData.o Fabrica.o main.o -g -luuid -o proyecto -lshell32 -lole32
 
 DtFechaHora.o: DtFechaHora.cpp

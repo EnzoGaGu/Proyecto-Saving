@@ -90,6 +90,7 @@ void ControladorData::seleccionarDirectorioLocal(string seleccionado){
         string nombreA(nombreArchivo);
 
         this->directorioLocal.push_back(directorio);
+
         this->nombreArchivo.push_back(nombreA);
         this->directorioLocalCompleto.push_back(seleccionado);
     }

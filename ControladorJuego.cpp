@@ -30,7 +30,24 @@ void ControladorJuego::agregarJuego(){
     mj->add(juego);
 }
 
-list<DtJuego*> ControladorJuego::verJuegosBackupeadosPorJugador(string nick){}
+list<DtJuego*> ControladorJuego::verJuegosBackupeadosPorJugador(string nick){
+    ManejadorUsuario* mu = ManejadorUsuario::getInstancia();
+
+    Usuario* user = mu->find(nick);
+
+    list<DtJuego*> juegos;
+    list<DtData*> dataUser;
+
+    if(user!=NULL){
+        dataUser = user->listData();
+        list<DtData*>::iterator it; 
+        for(it=dataUser.begin();it!=dataUser.end(); it++){
+            DtJuego* datosJuego = new DtJuego((*it)->getJuego()->getIdJuego(), (*it)->getJuego()->getNombre(), (*it)->getJuego()->getPlataforma(), (*it)->getJuego()->getImgLink(), (*it)->getJuego()->getDesc(), (*it)->getJuego()->getArchivosData(), (*it)->getJuego()->getDirectoriosData());
+            juegos.push_back(datosJuego);
+        }
+    }
+    return juegos;
+}
 
 
 //Devuelve una lista de todos los juegos almacenados en el sistema

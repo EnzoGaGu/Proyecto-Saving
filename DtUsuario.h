@@ -15,10 +15,10 @@ class DtUsuario{
         string pfp;                                         //Foto de perfil (link)
         DtFechaHora* fechaInsc;                             //Fecha de inscripción (autogenerada)
         bool admin;                                         //Si es admin o no (false por defecto)
-        list<Data*> dataAgregada;
+        list<DtData*> dataAgregada;
     public:
         DtUsuario();
-        DtUsuario(string nick, string nombre, string pass, string email, string pfp, DtFechaHora* fechaInsc, bool admin);
+        DtUsuario(string nick, string nombre, string pass, string email, string pfp, DtFechaHora* fechaInsc, bool admin, list<DtData*> dataAgregada);
         string getNick();
         string getNombre();
         string getPass();
@@ -26,9 +26,8 @@ class DtUsuario{
         string getPfp();
         DtFechaHora* getFechaInsc();
         bool getAdmin();
-        Data* findData(string idData);
-        bool memberData(string idData);
-        DtData* getDtData(string idData);
+        DtData* findData(int idData);
+        bool memberData(int idData);
         list<DtData*> listData();
         ~DtUsuario();
 

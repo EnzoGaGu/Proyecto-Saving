@@ -1,6 +1,7 @@
 #ifndef CONTROLADORJUEGO
 #define CONTROLADORJUEGO
 #include "IControladorJuego.h"
+#include "ManejadorUsuario.h"
 #include "ManejadorJuego.h"
 
 using namespace std; 
