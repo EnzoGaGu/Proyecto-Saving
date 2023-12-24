@@ -7,6 +7,9 @@
 #include <winbase.h>
 #include <list>
 #include <algorithm>
+#include <chrono>
+#include <ctime>
+#include "Fabrica.h"
 #include "DtFechaHora.h"
 #include "enumTipoDato.h"
 #include "enumFuente.h"

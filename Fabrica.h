@@ -6,6 +6,8 @@
 #include "ControladorJuego.h"
 #include "IControladorData.h"
 #include "ControladorData.h"
+#include "IControladorTiempo.h"
+#include "ControladorTiempo.h"
 
 
 class Fabrica{
@@ -18,6 +20,7 @@ class Fabrica{
         IControladorUsuario* getControladorUsuario();        
         IControladorJuego* getControladorJuego();
         IControladorData* getControladorData();
+        IControladorTiempo* getControladorTiempo();
 
         ~Fabrica();
 };

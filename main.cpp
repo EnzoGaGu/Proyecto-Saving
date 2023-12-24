@@ -15,6 +15,7 @@
 #include "IControladorUsuario.h"
 #include "IControladorJuego.h"
 #include "IControladorData.h"
+#include "IControladorTiempo.h"
 #include "Sesion.h"
 #include "Fabrica.h"
 #include <winerror.h>
@@ -33,6 +34,7 @@ Fabrica* factory;
 IControladorUsuario* iConU;
 IControladorJuego* iConJ;
 IControladorData* iConD; 
+IControladorTiempo* iConT;
 Sesion* sesion;
 bool sesionI;
 
@@ -71,8 +73,6 @@ void listarJuegos();
 //Lista los juegos para los que el usuario tiene algún backup en el sistema. Si un admin ejecuta esta función, puede ver los juegos registrados de otros usuarios.
 void verJuegosPorUsuario();
 
-//Devuelve un DtFechaHora con los datos del momento en el que se llamó la función
-DtFechaHora* fechaHoraActual();
 
 //void copiarArchivoReemplazando(const char* ubIn, const char* ubBackup, string nombreArchivo, const char* nombreJuego, const char* nombreSaved);
 
@@ -81,6 +81,7 @@ int main(){
     iConU = factory->getControladorUsuario();
     iConJ = factory->getControladorJuego();
     iConD = factory->getControladorData();
+    iConT = factory->getControladorTiempo();
     sesion = Sesion::getSesion();
 
     int opt;
@@ -120,9 +121,9 @@ int main(){
         while(salir == false){
             if(!sesion->getUsuario()->getAdmin()){                                          //Si es usuario normal
                 cout << "================================================" << endl;
-                cout << "   1: Respaldar partidas" << endl;
-                cout << "   2: Respaldar configuraciones" << endl;
-                cout << "   3: Comprobar si respalo está up-to-date" << endl;
+                cout << "   1: Crear respaldo de partidas" << endl;
+                cout << "   2: Crear respaldo de configuraciones" << endl;
+                cout << "   3: Actualizar respaldos" << endl;
                 cout << "   4: Ver juegos agregados" << endl;
                 cout << "   5: Ver respaldos de partidas" << endl;
                 cout << "   6: Ver respaldos de configuraciones" << endl;
@@ -274,8 +275,10 @@ void agregarJuegoAlSistema(){
 
     string info;
 
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
     cout << "Ingrese el nombre del juego a agregar: ";
-    cin >> nombre;
+    getline(cin, nombre);
 
     cout << "   1- Windows" << endl;
     cout << "   2- Linux" << endl;
@@ -287,17 +290,18 @@ void agregarJuegoAlSistema(){
     cout << "Ingrese el número de la plataforma a la que pertenece el juego: ";
     cin >> plataforma; 
     
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     EnumPlataforma platf = (EnumPlataforma)plataforma; 
 
     cout << "Ingrese el link de la imagen de carátula del juego: ";
-    cin >> imgLink;
+    getline(cin, imgLink);
 
     cout << "Ingrese una descripción del juego: ";
-    cin >> desc; 
+    getline(cin, desc);
 
     do{
         cout << "Ingrese la ruta de la carpeta donde el juego guarda sus archivos: ";
-        cin >> info; 
+        getline(cin, info);
 
         directoriosData.push_back(info);
 
@@ -307,10 +311,11 @@ void agregarJuegoAlSistema(){
         cin >> opt; 
     }while(opt!=2);
 
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     opt = 0;
     do{
         cout << "Ingrese el nombre del archivo de guardado del juego (incluyendo extensión): ";
-        cin >> info; 
+        getline(cin, info);
 
         archivosData.push_back(info);
 
@@ -320,6 +325,7 @@ void agregarJuegoAlSistema(){
         cin >> opt; 
     }while(opt!=2);
 
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     iConJ->recopilarDatos(nombre, platf, imgLink, desc, archivosData, directoriosData);
     iConJ->agregarJuego();
 }
@@ -464,7 +470,11 @@ void respaldarPartida(){
 
     EnumFuente plataformaFuente = static_cast<EnumFuente>(0);
 
-    iConD->crearVirtualData(idJuego, nombreData, comentariosJugador, fechaHoraActual(), plataformaFuente, tipoDato);
+    DtFechaHora* fechaHora = new DtFechaHora();
+
+    fechaHora->setFechaHoraActual();
+
+    iConD->crearVirtualData(idJuego, nombreData, comentariosJugador, fechaHora, plataformaFuente, tipoDato);
 }
 
 void verRespaldosPartida(){
@@ -522,16 +532,6 @@ void verJuegosPorUsuario(){
     else{
         cout << "El usuario no tiene ningún backup creado." << endl; 
     }
-}
-
-//Fecha y hora actual
-DtFechaHora* fechaHoraActual(){
-    time_t now = time(0);
-
-    tm *ltm = localtime(&now);
-
-    DtFechaHora* dtFechaHora = new DtFechaHora(ltm->tm_mday,(1+ltm->tm_mon),(1900+ltm->tm_year),(ltm->tm_hour),(ltm->tm_min));
-    return dtFechaHora;
 }
 
 

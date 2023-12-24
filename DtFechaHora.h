@@ -12,15 +12,17 @@ private:
 	int anio;
 	int hora;
 	int minuto;
+	int segundo; 
 public:
 	DtFechaHora();//constructor vacio
-	DtFechaHora(int,int,int,int,int);//constructor completo
+	DtFechaHora(int,int,int,int,int,int);//constructor completo
 
 	int getDia();
 	int getMes();
 	int getAnio();
 	int getHora();
 	int getMinuto();
+	int getSegundo();
 
 	void setFechaHoraActual();
 

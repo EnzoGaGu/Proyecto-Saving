@@ -1,6 +1,8 @@
 #include "ControladorData.h"
 
 
+
+
 ControladorData::ControladorData(){}
 
 
@@ -299,5 +301,41 @@ list<DtData*> ControladorData::verVirtualData(EnumTipoDato tipoDato){
 
     return selectedData;
 }
+
+void ControladorData::comprobarDiferenciasUltimaActualizacion(int idData){
+    Fabrica* factory = Fabrica::getInstancia();
+    IControladorTiempo* iConT = factory->getControladorTiempo(); 
+    
+    Sesion* sesion = Sesion::getSesion();
+    Usuario* user = sesion->getUsuario();
+    Data* data = user->findData(idData);
+    list<string> directorioLocal = data->getDirectorioLocal();
+
+    bool desactualizado = false; 
+
+    list<string> directoriosLocalesExistentes; 
+
+    DtFechaHora* fechaModificacionData = data->getFechaUltModificacion();
+    DtFechaHora* fechaModificacionArchivo; 
+
+    list<string>::iterator st; 
+    //Revisar cada archivo local registrado en el Data
+    for(st=directorioLocal.begin();st!=directorioLocal.end();st++){
+        //Si el archivo local todavía existe 
+        if(fs::exists(*st)){
+
+            //Se lo añade a una lista 
+            directoriosLocalesExistentes.push_back(*st);         
+
+            //Y se comprueba si alguno de los archivos locales se modificó después del último update al data       
+            fechaModificacionArchivo = iConT->fechaModificacionArchivo(*st);
+            if(fechaModificacionArchivo > fechaModificacionData){
+                desactualizado = true; 
+            }
+
+        }
+    }
+}
+
 
 ControladorData::~ControladorData(){}

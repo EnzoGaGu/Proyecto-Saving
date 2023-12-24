@@ -18,7 +18,7 @@ using namespace std;
 
 class ControladorData : public IControladorData{
     private:
-        string idData;
+        int idData;
         list<string> nombreArchivo;
         list<string> directorioLocal;
         list<string> directorioLocalCompleto; 
@@ -34,6 +34,7 @@ class ControladorData : public IControladorData{
         void backupearDatos(bool conReemplazo);
         void crearVirtualData(int idJuego, string nombreData, string comentariosJugador, DtFechaHora* fechaCreacionData, EnumFuente plataforma, EnumTipoDato tipoDato);
         list<DtData*> verVirtualData(EnumTipoDato tipoDato);
+        bool comprobarDiferenciasUltimaActualizacion(int idData);
         ~ControladorData();
 };
 

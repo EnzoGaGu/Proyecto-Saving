@@ -24,4 +24,8 @@ IControladorData* Fabrica::getControladorData(){
     return new ControladorData();
 }
 
+IControladorTiempo* Fabrica::getControladorTiempo(){
+    return new ControladorTiempo();
+}
+
 Fabrica::~Fabrica(){}
