@@ -1,8 +1,5 @@
 #include "ControladorData.h"
 
-
-
-
 ControladorData::ControladorData(){}
 
 
@@ -302,9 +299,9 @@ list<DtData*> ControladorData::verVirtualData(EnumTipoDato tipoDato){
     return selectedData;
 }
 
-void ControladorData::comprobarDiferenciasUltimaActualizacion(int idData){
-    Fabrica* factory = Fabrica::getInstancia();
-    IControladorTiempo* iConT = factory->getControladorTiempo(); 
+//Comprueba si los archivos de un Data específico están todos up-to-date. Si encuentra algún archivo registrado en el backup, cuya versión local es más nueva que la del backup, retorna true.
+bool ControladorData::comprobarDiferenciasUltimaActualizacion(int idData){
+    IControladorTiempo* iConT = new ControladorTiempo(); 
     
     Sesion* sesion = Sesion::getSesion();
     Usuario* user = sesion->getUsuario();
@@ -313,8 +310,6 @@ void ControladorData::comprobarDiferenciasUltimaActualizacion(int idData){
 
     bool desactualizado = false; 
 
-    list<string> directoriosLocalesExistentes; 
-
     DtFechaHora* fechaModificacionData = data->getFechaUltModificacion();
     DtFechaHora* fechaModificacionArchivo; 
 
@@ -322,11 +317,7 @@ void ControladorData::comprobarDiferenciasUltimaActualizacion(int idData){
     //Revisar cada archivo local registrado en el Data
     for(st=directorioLocal.begin();st!=directorioLocal.end();st++){
         //Si el archivo local todavía existe 
-        if(fs::exists(*st)){
-
-            //Se lo añade a una lista 
-            directoriosLocalesExistentes.push_back(*st);         
-
+        if(fs::exists(*st)){       
             //Y se comprueba si alguno de los archivos locales se modificó después del último update al data       
             fechaModificacionArchivo = iConT->fechaModificacionArchivo(*st);
             if(fechaModificacionArchivo > fechaModificacionData){
@@ -335,6 +326,7 @@ void ControladorData::comprobarDiferenciasUltimaActualizacion(int idData){
 
         }
     }
+    return desactualizado; 
 }
 
 

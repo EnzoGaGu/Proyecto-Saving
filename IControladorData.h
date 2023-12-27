@@ -9,7 +9,8 @@
 #include <algorithm>
 #include <chrono>
 #include <ctime>
-#include "Fabrica.h"
+#include "IControladorTiempo.h"
+#include "ControladorTiempo.h"
 #include "DtFechaHora.h"
 #include "enumTipoDato.h"
 #include "enumFuente.h"
