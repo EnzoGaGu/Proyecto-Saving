@@ -11,7 +11,7 @@ using namespace std;
 class DtData{
     private:
         int idData;                                             //Identificador de la partida. Para separar las diferentes versiones de una misma
-        Juego* juego; 
+        int idJuego; 
         string nombreData;
         list<string> directorioLocal;                                       //Dirección del archivo en el sistema
         string directorioCloud;
@@ -19,11 +19,12 @@ class DtData{
         DtFechaHora* fechaUltModificacion; 
         EnumFuente plataformaFuente;  
         EnumTipoDato tipoDato;
+        bool conHistorial;
     public:
         DtData();
-        DtData(int idData, Juego* juego, string nombreData, list<string> directorioLocal, string directorioCloud, string comentariosJugador, DtFechaHora* fechaUltModificacion, EnumFuente plataformaFuente, EnumTipoDato tipoDato);
+        DtData(int idData, int idJuego, string nombreData, list<string> directorioLocal, string directorioCloud, string comentariosJugador, DtFechaHora* fechaUltModificacion, EnumFuente plataformaFuente, EnumTipoDato tipoDato, bool conHistorial);
         int getIdData();
-        Juego* getJuego();
+        int getJuego();
         string getNombreData();
         list<string> getDirectorioLocal();
         string getDirectorioCloud();
@@ -31,6 +32,7 @@ class DtData{
         DtFechaHora* getFechaUltModificacion();
         EnumFuente getPlataformaFuente();
         EnumTipoDato getTipoDato();
+        bool getConHistorial();
         ~DtData();
 
         friend ostream& operator <<(ostream&,const DtData&);//sobrecarga de <<

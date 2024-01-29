@@ -8,7 +8,7 @@
 #include <fstream>
 #include <winbase.h>
 #include <map>
-//#include <pqxx/pqxx>
+#include <pqxx/pqxx>
 //#include <mysql_driver.h>
 //#include <mysql_connection.h>
 //#include <boost/filesystem.hpp>
@@ -38,6 +38,7 @@ IControladorData* iConD;
 IControladorTiempo* iConT;
 Sesion* sesion;
 bool sesionI;
+pqxx::connection c("dbname=postgres user=postgres password=admin hostaddr=127.0.0.1 port=5432");
 
 //Precarga usuarios y juegos, para probar el sistema sin necesidad de persistencia.
 void precargarDatos();
@@ -62,6 +63,8 @@ void respaldarPartida();
 //Ver todas las partidas respaldadas por el usuario que inició sesión
 void verRespaldosPartida();
 
+//Actualizar todos los respaldos del usuario, comprobando si los archivos de éstos están up-to-date con los del sistema. 
+void actualizarRespaldos();
 
 //Comprobar si existe un archivo con el nombre "archivo" en la ruta "directorio".
 bool archivoExiste(const char* directorio, string archivo);
@@ -77,7 +80,17 @@ void verJuegosPorUsuario();
 
 //void copiarArchivoReemplazando(const char* ubIn, const char* ubBackup, string nombreArchivo, const char* nombreJuego, const char* nombreSaved);
 
+
+
 int main(){
+    // Start a transaction.  In libpqxx, you always work in one.
+    if (c.is_open()) {
+        std::cout << "Conexión exitosa a la base de datos PostgreSQL" << std::endl;
+    } else {
+        std::cout << "Error de conexión a la base de datos PostgreSQL" << std::endl;
+        return 1;
+    }
+
     factory = Fabrica::getInstancia();
     iConU = factory->getControladorUsuario();
     iConJ = factory->getControladorJuego();
@@ -144,6 +157,7 @@ int main(){
                     case 2: 
                     break;
                     case 3: 
+                        actualizarRespaldos();
                     break;
                     case 4: 
                         verJuegosPorUsuario();
@@ -251,7 +265,7 @@ void Registro(){
     cin >> pfp; 
 
     try{
-        iConU->registro(nick, nombre, pass, email, pfp);
+        iConU->registro(nick, nombre, pass, email, pfp, std::move(c));
         cout << "¡Usuario registrado!" << endl; 
         cout << "¿Desea iniciar sesión con este usuario?" << endl; 
         cout << "   1: Sí" << endl;
@@ -475,7 +489,7 @@ void respaldarPartida(){
 
     fechaHora->setFechaHoraActual();
 
-    iConD->crearVirtualData(idJuego, nombreData, comentariosJugador, fechaHora, plataformaFuente, tipoDato);
+    iConD->crearVirtualData(idJuego, nombreData, comentariosJugador, fechaHora, plataformaFuente, tipoDato, conReemplazo);
 }
 
 void verRespaldosPartida(){
@@ -496,6 +510,36 @@ void verRespaldosPartida(){
     }
 }
 
+void actualizarRespaldos(){
+    Sesion* sesion = Sesion::getSesion();
+    Usuario* user = sesion->getUsuario();
+
+    list<DtData*> userData = user->listData();
+    list<DtData*>::iterator dt; 
+
+    list<string> localDataPath; 
+    list<string>::iterator pt; 
+
+
+    for(dt = userData.begin(); dt!=userData.end(); dt++){
+        localDataPath = iConD->listarArchivosDesactualizados((*dt)->getIdData());
+
+        if(!localDataPath.empty()){
+            for(pt=localDataPath.begin();pt!=localDataPath.end();pt++){
+                iConD->seleccionarDirectorioLocal((*pt));
+
+                iConD->crearCarpetaBackup((*dt)->getDirectorioCloud(), (*dt)->getJuego(), (*dt)->getNombreData(), !(*dt)->getConHistorial());
+
+                iConD->backupearDatos(!(*dt)->getConHistorial());
+            }
+
+            iConD->actualizarFechaVirutalData((*dt)->getIdData());
+
+            cout << "Se actualizaron los archivos del backup " << (*dt)->getNombreData() << endl; 
+        }
+
+    }
+}
 
 void listarJuegos(){
     list<DtJuego*> juegos = iConJ->listarJuegos();
@@ -537,7 +581,8 @@ void verJuegosPorUsuario(){
 
 
 void precargarDatos(){
-    iConU->registro("ElDeLaBarba", "Enzo", "1234", "enzogagu@gmail.com", "google.com");
+    iConU->registro("ElDeLaBarba", "Enzo", "1234", "enzogagu@gmail.com", "google.com", std::move(c));
+    /*
     iConU->registro("EnzoGularte", "Enzo", "1234", "enzogagu@gmail.com", "google.com");
     iConU->registro("ElBar", "Bas", "1234", "thatonewithabeard@gmail.com", "instagram.com");
 
@@ -599,5 +644,6 @@ void precargarDatos(){
 
     iConJ->recopilarDatos("Hotline Miami", plataforma, "google.com", "GOTY", archivos, directorios);
     iConJ->agregarJuego();
+    
+*/
 }
-

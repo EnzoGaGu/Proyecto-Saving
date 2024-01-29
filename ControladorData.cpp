@@ -239,12 +239,14 @@ void ControladorData::backupearDatos(bool conReemplazo){
 }
 
 //Crea un objeto de clase Data, y lo almacena en el usuario que inició sesión
-void ControladorData::crearVirtualData(int idJuego, string nombreData, string comentariosJugador, DtFechaHora* fechaCreacionData, EnumFuente plataforma, EnumTipoDato tipoDato){
+void ControladorData::crearVirtualData(int idJuego, string nombreData, string comentariosJugador, DtFechaHora* fechaCreacionData, EnumFuente plataforma, EnumTipoDato tipoDato, bool conReemplazo){
     ManejadorJuego* mj = ManejadorJuego::getInstancia();
 
     Juego* juego = mj->find(idJuego);
     int idData; 
     bool encontrado; 
+
+    bool conHistorial = !conReemplazo; 
 
     Sesion* sesion = Sesion::getSesion();
     Usuario* user = sesion->getUsuario();
@@ -270,7 +272,7 @@ void ControladorData::crearVirtualData(int idJuego, string nombreData, string co
 
 
     if(!encontrado){
-        Data* newData = new Data(idData, juego, nombreData, this->directorioLocalCompleto, this->directorioBackup, comentariosJugador, fechaCreacionData, plataforma, tipoDato);
+        Data* newData = new Data(idData, juego->getIdJuego(), nombreData, this->directorioLocalCompleto, this->directorioBackup, comentariosJugador, fechaCreacionData, plataforma, tipoDato, conHistorial);
         user->addData(newData);
     }
     
@@ -299,8 +301,20 @@ list<DtData*> ControladorData::verVirtualData(EnumTipoDato tipoDato){
     return selectedData;
 }
 
-//Comprueba si los archivos de un Data específico están todos up-to-date. Si encuentra algún archivo registrado en el backup, cuya versión local es más nueva que la del backup, retorna true.
-bool ControladorData::comprobarDiferenciasUltimaActualizacion(int idData){
+void ControladorData::actualizarFechaVirutalData(int idData){
+    Sesion* sesion = Sesion::getSesion();
+    Usuario* user = sesion->getUsuario();
+    IControladorTiempo* iConT = new ControladorTiempo();
+
+    Data* data = user->findData(idData);
+    
+    DtFechaHora* fechaActual = iConT->fechaHoraActual();
+
+    data->setFechaUltModificacion(fechaActual);
+}
+
+//Comprueba si hay archivos del backup cuyas versiones locales son más nuevas que éste, y devuelve una lista de strings con las direcciones locales de los que encuentre. Si no encuentra ninguno, devuelve una lista vacía  
+list<string> ControladorData::listarArchivosDesactualizados(int idData){
     IControladorTiempo* iConT = new ControladorTiempo(); 
     
     Sesion* sesion = Sesion::getSesion();
@@ -308,7 +322,9 @@ bool ControladorData::comprobarDiferenciasUltimaActualizacion(int idData){
     Data* data = user->findData(idData);
     list<string> directorioLocal = data->getDirectorioLocal();
 
-    bool desactualizado = false; 
+    list<string> archivosNuevos; 
+
+    //bool desactualizado = false; 
 
     DtFechaHora* fechaModificacionData = data->getFechaUltModificacion();
     DtFechaHora* fechaModificacionArchivo; 
@@ -321,13 +337,15 @@ bool ControladorData::comprobarDiferenciasUltimaActualizacion(int idData){
             //Y se comprueba si alguno de los archivos locales se modificó después del último update al data       
             fechaModificacionArchivo = iConT->fechaModificacionArchivo(*st);
             if(fechaModificacionArchivo > fechaModificacionData){
-                desactualizado = true; 
+                //desactualizado = true; 
+                archivosNuevos.push_back(*st);
             }
 
         }
     }
-    return desactualizado; 
+    return archivosNuevos; 
 }
+
 
 
 ControladorData::~ControladorData(){}

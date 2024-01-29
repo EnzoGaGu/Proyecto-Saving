@@ -24,7 +24,7 @@ void ControladorUsuario::iniciarSesion(string nick, string pass){
     
 }
 
-void ControladorUsuario::registro(string nick, string nombre, string pass, string email, string pfp){
+void ControladorUsuario::registro(string nick, string nombre, string pass, string email, string pfp, pqxx::connection c){
     ManejadorUsuario* mu = ManejadorUsuario::getInstancia();
 
     DtFechaHora* dtFechaHora = new DtFechaHora();
@@ -38,6 +38,12 @@ void ControladorUsuario::registro(string nick, string nombre, string pass, strin
     if(!mu->member(nick)){
         Usuario* user = new Usuario(nick, nombre, pass, email, pfp, dtFechaHora, admin);
         mu->add(user);
+
+        pqxx::work txn(c);
+
+        txn.exec_params("INSERT INTO usuario (nick, nombre, pass, email, pfp, fecha_insc, admin) VALUES ($1, $2, $3, $4, $5, to_custom_type($6, $7, $8, $9, $10, $11), $12)", nick, nombre, pass, email, pfp, dtFechaHora->getDia(), dtFechaHora->getMes(), dtFechaHora->getAnio(), dtFechaHora->getHora(), dtFechaHora->getMinuto(), dtFechaHora->getSegundo(), admin);
+
+        txn.commit();
     }
     else{
         throw invalid_argument("El nickname ya existe.");

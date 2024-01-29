@@ -2,9 +2,9 @@
 
 Data::Data(){}
 
-Data::Data(int idData, Juego* juego, string nombreData, list<string> directorioLocal, string directorioCloud, string comentariosJugador, DtFechaHora* fechaUltModificacion, EnumFuente plataformaFuente, EnumTipoDato tipoDato){
+Data::Data(int idData, int idJuego, string nombreData, list<string> directorioLocal, string directorioCloud, string comentariosJugador, DtFechaHora* fechaUltModificacion, EnumFuente plataformaFuente, EnumTipoDato tipoDato, bool conHistorial){
     this->idData = idData;
-    this->juego = juego;
+    this->idJuego = idJuego;
     this->nombreData = nombreData;
     this->directorioLocal = directorioLocal;
     this->directorioCloud = directorioCloud;
@@ -12,6 +12,7 @@ Data::Data(int idData, Juego* juego, string nombreData, list<string> directorioL
     this->fechaUltModificacion = fechaUltModificacion;
     this->plataformaFuente = plataformaFuente;
     this->tipoDato = tipoDato;
+    this->conHistorial = conHistorial;
 }
 
 int Data::getIdData(){
@@ -22,12 +23,12 @@ void Data::setIdData(int idData){
     this->idData = idData;
 }
 
-Juego* Data::getJuego(){
-    return this->juego;
+int Data::getJuego(){
+    return this->idJuego;
 }
 
-void Data::setJuego(Juego* juego){
-    this->juego = juego;
+void Data::setJuego(int idJuego){
+    this->idJuego = idJuego;
 }
 
 string Data::getNombreData(){
@@ -84,6 +85,14 @@ EnumTipoDato Data::getTipoDato(){
 
 void Data::setTipoDato(EnumTipoDato tipoDato){
     this->tipoDato = tipoDato;
+}
+
+bool Data::getConHistorial(){
+    return this->conHistorial;
+}
+
+void Data::setConHistorial(bool conHistorial){
+    this->conHistorial = conHistorial; 
 }
 
 Data::~Data(){}

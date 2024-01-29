@@ -32,9 +32,10 @@ class ControladorData : public IControladorData{
         bool disponibilidadNombreData(string nombreData);
         void crearCarpetaBackup(string directorioBackup, int idJuego, string nombreData, bool conReemplazo);
         void backupearDatos(bool conReemplazo);
-        void crearVirtualData(int idJuego, string nombreData, string comentariosJugador, DtFechaHora* fechaCreacionData, EnumFuente plataforma, EnumTipoDato tipoDato);
+        void crearVirtualData(int idJuego, string nombreData, string comentariosJugador, DtFechaHora* fechaCreacionData, EnumFuente plataforma, EnumTipoDato tipoDato, bool conReemplazo);
+        void actualizarFechaVirutalData(int idData);
         list<DtData*> verVirtualData(EnumTipoDato tipoDato);
-        bool comprobarDiferenciasUltimaActualizacion(int idData);
+        list<string> listarArchivosDesactualizados(int idData);
         ~ControladorData();
 };
 

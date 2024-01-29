@@ -103,7 +103,7 @@ DtData* Usuario::getDtData(int idData){
     DtData* dtData; 
 
     if(data!=NULL){
-        dtData = new DtData(data->getIdData(), data->getJuego(), data->getNombreData(), data->getDirectorioLocal(), data->getDirectorioCloud(), data->getComentariosJugador(), data->getFechaUltModificacion(), data->getPlataformaFuente(), data->getTipoDato());
+        dtData = new DtData(data->getIdData(), data->getJuego(), data->getNombreData(), data->getDirectorioLocal(), data->getDirectorioCloud(), data->getComentariosJugador(), data->getFechaUltModificacion(), data->getPlataformaFuente(), data->getTipoDato(), data->getConHistorial());
     }
     else{
         dtData = NULL;
@@ -117,7 +117,7 @@ list<DtData*> Usuario::listData(){
 
     list<Data*>::iterator it;
     for(it=this->dataAgregada.begin(); it!=this->dataAgregada.end(); it++){
-        DtData* data = new DtData((*it)->getIdData(), (*it)->getJuego(), (*it)->getNombreData(), (*it)->getDirectorioLocal(), (*it)->getDirectorioCloud(), (*it)->getComentariosJugador(), (*it)->getFechaUltModificacion(), (*it)->getPlataformaFuente(), (*it)->getTipoDato());
+        DtData* data = new DtData((*it)->getIdData(), (*it)->getJuego(), (*it)->getNombreData(), (*it)->getDirectorioLocal(), (*it)->getDirectorioCloud(), (*it)->getComentariosJugador(), (*it)->getFechaUltModificacion(), (*it)->getPlataformaFuente(), (*it)->getTipoDato(), (*it)->getConHistorial());
         lista.push_back(data);
     }
 
