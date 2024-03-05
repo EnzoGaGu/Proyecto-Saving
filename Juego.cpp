@@ -69,4 +69,48 @@ list<string> Juego::getDirectoriosData(){
     return this->directoriosData;
 }
 
+string Juego::plataformaToString(){
+    switch(this->plataforma){
+        case EnumPlataforma::WINDOWS:
+            return "WINDOWS";
+        case EnumPlataforma::LINUX:
+            return "LINUX";
+        case EnumPlataforma::ANDROID:
+            return "ANDROID";
+        case EnumPlataforma::PS1:
+            return "PS1";
+        case EnumPlataforma::PS2:
+            return "PS2";
+        case EnumPlataforma::GAMECUBE:
+            return "GAMECUBE";
+        case EnumPlataforma::XBOX:
+            return "XBOX";
+    }
+    return "";
+}
+
+void Juego::stringToPlataforma(string plataforma){
+    if(plataforma == "WINDOWS"){
+        this->plataforma = EnumPlataforma::WINDOWS;
+    }
+    else if(plataforma == "LINUX"){
+        this->plataforma = EnumPlataforma::LINUX;
+    }
+    else if(plataforma == "ANDROID"){
+        this->plataforma = EnumPlataforma::ANDROID;
+    }
+    else if(plataforma == "PS1"){
+        this->plataforma = EnumPlataforma::PS1;
+    }
+    else if(plataforma == "PS2"){
+        this->plataforma = EnumPlataforma::PS2;
+    }
+    else if(plataforma == "GAMECUBE"){
+        this->plataforma = EnumPlataforma::GAMECUBE;
+    }
+    else if(plataforma == "XBOX"){
+        this->plataforma = EnumPlataforma::XBOX;
+    }
+}
+
 Juego::~Juego(){}

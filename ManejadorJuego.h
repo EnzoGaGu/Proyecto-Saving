@@ -2,6 +2,7 @@
 #define MANEJADORJUEGO
 #include <list>
 #include <iostream>
+#include <pqxx/pqxx>
 #include "Juego.h"
 
 using namespace std; 
@@ -13,7 +14,8 @@ class ManejadorJuego{
         static ManejadorJuego* instancia;
     public:
         static ManejadorJuego* getInstancia();
-        void add(Juego* juego);
+        void getFromDB(pqxx::work& txn); 
+        void add(Juego* juego, pqxx::work& txn);
         bool member(int idJuego);
         Juego* find(int idJuego);
         void remove(int idJuego);

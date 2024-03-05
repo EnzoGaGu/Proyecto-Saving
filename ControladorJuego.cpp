@@ -2,6 +2,12 @@
 
 ControladorJuego::ControladorJuego(){}
 
+
+void ControladorJuego::inicializar(pqxx::work& txn){
+    ManejadorJuego* mj = ManejadorJuego::getInstancia();
+    mj->getFromDB(txn);
+}
+
 void ControladorJuego::seleccionarJuego(int idJuego){
 
 }
@@ -17,7 +23,7 @@ void ControladorJuego::recopilarDatos(string nombre, EnumPlataforma plataforma, 
 }
 
 //Agrega un juego a la lista global, utilizando los datos almacenados en el controlador
-void ControladorJuego::agregarJuego(){
+void ControladorJuego::agregarJuego(pqxx::work& txn){
     ManejadorJuego* mj = ManejadorJuego::getInstancia();
     int idJuego = 0;
 
@@ -27,13 +33,16 @@ void ControladorJuego::agregarJuego(){
 
     Juego* juego = new Juego(idJuego, this->nombreJuego, this->plataforma, this->imgLink, this->desc, this->archivosData, this->directoriosData);
 
-    mj->add(juego);
+    mj->add(juego, txn);
 }
 
-list<DtJuego*> ControladorJuego::verJuegosBackupeadosPorJugador(string nick){
+
+list<DtJuego*> ControladorJuego::verJuegosBackupeadosPorJugador(string nick, pqxx::connection c){
     ManejadorUsuario* mu = ManejadorUsuario::getInstancia();
 
-    Usuario* user = mu->find(nick);
+    pqxx::work txn(c);
+
+    Usuario* user = mu->find(nick, txn);
 
     list<DtJuego*> juegos;
     list<DtData*> dataUser;
@@ -42,8 +51,10 @@ list<DtJuego*> ControladorJuego::verJuegosBackupeadosPorJugador(string nick){
         dataUser = user->listData();
         list<DtData*>::iterator it; 
         for(it=dataUser.begin();it!=dataUser.end(); it++){
+            /*
             DtJuego* datosJuego = new DtJuego((*it)->getJuego()->getIdJuego(), (*it)->getJuego()->getNombre(), (*it)->getJuego()->getPlataforma(), (*it)->getJuego()->getImgLink(), (*it)->getJuego()->getDesc(), (*it)->getJuego()->getArchivosData(), (*it)->getJuego()->getDirectoriosData());
             juegos.push_back(datosJuego);
+            */
         }
     }
     return juegos;

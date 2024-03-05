@@ -11,8 +11,95 @@ ManejadorJuego* ManejadorJuego::getInstancia(){
     return instancia;
 }
 
-void ManejadorJuego::add(Juego* juego){
+
+void ManejadorJuego::getFromDB(pqxx::work& txn){
+    string sql = "SELECT * FROM juego";
+
+    pqxx::result result(txn.exec(sql));
+
+
+    for(const auto& row : result){
+        Juego* game = new Juego();
+
+
+        game->setIdJuego(row["id_juego"].as<int>());
+        game->setNombre(row["nombre"].as<string>());
+
+        string plataforma = row["plataforma"].as<string>();
+        game->stringToPlataforma(plataforma);
+
+        game->setImgLink(row["img_link"].as<string>());
+        game->setDesc(row["descripcion"].as<string>());
+
+        string archivos_data = row["archivos_data"].as<string>();
+
+        list<string> archivosData;
+        // Elimina los caracteres especiales y el corchete al principio y al final
+        archivos_data = archivos_data.substr(1, archivos_data.size() - 2);
+        
+        istringstream iss(archivos_data);
+        string token;
+        char delimiter = ',';
+
+        while (getline(iss, token, delimiter)) {
+            // Elimina las comillas y espacios alrededor del nombre de archivo
+            size_t start = token.find('\'');
+            size_t end = token.find_last_of('\'');
+            archivosData.push_back(token.substr(start + 1, end - start - 1));
+        }
+
+        game->setArchivosData(archivosData);
+
+
+        string directorios_data = row["directoriosdata"].as<string>();
+        
+        list<string> directoriosData;
+
+        directorios_data = directorios_data.substr(1, directorios_data.size() - 2);
+
+        istringstream issd(directorios_data);
+
+        while(getline(issd, token, delimiter)){
+            size_t start = token.find('\'');
+            size_t end = token.find_last_of('\'');
+            directoriosData.push_back(token.substr(start+1, end-start-1));
+        }
+
+        game->setDirectoriosData(directoriosData);
+
+        this->juegos.push_back(game);
+    }
+
+    txn.abort();
+}
+
+void ManejadorJuego::add(Juego* juego, pqxx::work& txn){
     juegos.push_back(juego);
+
+    string archivos, directorios; 
+
+    list<string> archivosJuego = juego->getArchivosData(); 
+    list<string> directoriosJuego = juego->getDirectoriosData(); 
+
+    list<string>::iterator it; 
+
+    archivos = '{';
+
+    for(it=archivosJuego.begin();it!=archivosJuego.end(); it++){
+        archivos += "'" + (*it) + "',";
+    }
+    archivos.back()= '}';
+
+    directorios = '{';
+    for(it=directoriosJuego.begin();it!=directoriosJuego.end(); it++){
+        directorios += "'" + (*it) + "',";
+    }
+    directorios.back() = '}';
+
+    txn.exec_params("INSERT INTO juego (id_juego, nombre, plataforma, img_link, descripcion, archivos_data, directoriosdata) VALUES ($1, $2, $3, $4, $5, $6, $7)", juego->getIdJuego(), juego->getNombre(), juego->plataformaToString(), juego->getImgLink(), juego->getDesc(), archivos, directorios);
+
+    txn.commit();
+    //cout << "Ingresado con éxito";
 }
 
 bool ManejadorJuego::member(int idJuego){

@@ -2,22 +2,23 @@
 #define MANEJADORUSUARIO
 #include <list>
 #include <iostream>
+#include <pqxx/pqxx>
+#include "Fabrica.h"
 #include "Usuario.h"
 
 using namespace std;
 
 class ManejadorUsuario{
     private:
-        list<Usuario*> usuarios;
         ManejadorUsuario();
         static ManejadorUsuario* instancia;
     public:
         static ManejadorUsuario* getInstancia();
         list<Usuario*> getUsuarios();
-        void add(Usuario* usuario);
-        bool member(string nick);
-        Usuario* find(string nick); 
-        void remove(string nick);
+        void add(Usuario* usuario, pqxx::work& txn);
+        bool member(string nick, pqxx::work& txn);
+        Usuario* find(string nick, pqxx::work& txn); 
+        void remove(string nick, pqxx::work& txn);
         ~ManejadorUsuario();
 };
 

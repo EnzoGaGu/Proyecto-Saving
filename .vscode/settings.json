@@ -58,6 +58,9 @@
         "chrono": "cpp",
         "format": "cpp",
         "span": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "source_location": "cpp",
+        "ranges": "cpp",
+        "cinttypes": "cpp"
     }
 }

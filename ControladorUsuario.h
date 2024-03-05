@@ -11,8 +11,8 @@ class ControladorUsuario: public IControladorUsuario{
         string nick;
     public:
         ControladorUsuario();
-        void iniciarSesion(string nick, string pass);
-        void registro(string nick, string nombre, string pass, string email, string pfp, pqxx::connection c);
+        void iniciarSesion(string nick, string pass, pqxx::work& txn);
+        void registro(string nick, string nombre, string pass, string email, string pfp, pqxx::work& txn);
         void modificarUsuario(string nick, string nombre, string pass, string email, string pfp);
         DtUsuario* getDtUsuarioActual();
         ~ControladorUsuario();

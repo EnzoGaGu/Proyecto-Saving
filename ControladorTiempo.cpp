@@ -36,4 +36,24 @@ DtFechaHora* ControladorTiempo::fechaModificacionArchivo(string ruta){
     return fechaModificacion;
 }
 
+DtFechaHora* ControladorTiempo::PostgreToDt(string fecha){
+    DtFechaHora* fechaHora; 
+
+    string fechaMod;
+
+    fechaMod = fecha.substr(1, fecha.size()-2);
+
+    stringstream ss(fechaMod);
+
+    int dia, mes, anio, hora, minuto, segundo; 
+    char comma; 
+
+    ss >> dia >> comma >> mes >> comma >> anio >> comma >> hora >> comma >> minuto >> comma >> segundo; 
+
+    fechaHora = new DtFechaHora(dia, mes, anio, hora, minuto, segundo);
+
+    return fechaHora; 
+}
+
+
 ControladorTiempo::~ControladorTiempo(){}

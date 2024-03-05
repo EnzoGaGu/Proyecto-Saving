@@ -4,13 +4,13 @@ ControladorUsuario::ControladorUsuario(){}
 
 
 
-void ControladorUsuario::iniciarSesion(string nick, string pass){
+void ControladorUsuario::iniciarSesion(string nick, string pass, pqxx::work& txn){
     ManejadorUsuario* mu = ManejadorUsuario::getInstancia();
     Sesion* sesion = Sesion::getSesion();
     Usuario* user;
 
-    if(mu->member(nick)){
-        user = (*mu).find(nick);
+    if(mu->member(nick, txn)){
+        user = (*mu).find(nick, txn);
         if(user->getPass() == pass){
             sesion->setUsuario(user);
         } 
@@ -24,26 +24,22 @@ void ControladorUsuario::iniciarSesion(string nick, string pass){
     
 }
 
-void ControladorUsuario::registro(string nick, string nombre, string pass, string email, string pfp, pqxx::connection c){
+void ControladorUsuario::registro(string nick, string nombre, string pass, string email, string pfp, pqxx::work& txn){
     ManejadorUsuario* mu = ManejadorUsuario::getInstancia();
 
     DtFechaHora* dtFechaHora = new DtFechaHora();
     dtFechaHora->setFechaHoraActual();
 
+    pqxx::result usersSQL(txn.exec("SELECT * FROM usuario"));
+
     bool admin = false;
-    if(mu->getUsuarios().empty()){
+    if(usersSQL.empty()){
         admin = true;
     }
 
-    if(!mu->member(nick)){
+    if(!mu->member(nick, txn)){
         Usuario* user = new Usuario(nick, nombre, pass, email, pfp, dtFechaHora, admin);
-        mu->add(user);
-
-        pqxx::work txn(c);
-
-        txn.exec_params("INSERT INTO usuario (nick, nombre, pass, email, pfp, fecha_insc, admin) VALUES ($1, $2, $3, $4, $5, to_custom_type($6, $7, $8, $9, $10, $11), $12)", nick, nombre, pass, email, pfp, dtFechaHora->getDia(), dtFechaHora->getMes(), dtFechaHora->getAnio(), dtFechaHora->getHora(), dtFechaHora->getMinuto(), dtFechaHora->getSegundo(), admin);
-
-        txn.commit();
+        mu->add(user, txn);
     }
     else{
         throw invalid_argument("El nickname ya existe.");

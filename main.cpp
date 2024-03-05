@@ -83,6 +83,7 @@ void verJuegosPorUsuario();
 
 
 int main(){
+    c.set_client_encoding("UTF8");
     // Start a transaction.  In libpqxx, you always work in one.
     if (c.is_open()) {
         std::cout << "Conexión exitosa a la base de datos PostgreSQL" << std::endl;
@@ -97,6 +98,9 @@ int main(){
     iConD = factory->getControladorData();
     iConT = factory->getControladorTiempo();
     sesion = Sesion::getSesion();
+
+    pqxx::work txnini(c);
+    iConJ->inicializar(txnini);
 
     int opt;
     sesionI = false; 
@@ -125,7 +129,7 @@ int main(){
                 cerrar = true; 
             break; 
             default: 
-                cout << "La opción no es válida. Reintente" << endl; 
+                cout << "La opción no es válida. Reintente" << endl;  
             break; 
         }    
     }
@@ -230,6 +234,8 @@ int main(){
 void IniciarSesion(){
     string nick, pass; 
 
+    pqxx::work txn(c);
+
     cout << "Ingrese el nickname: ";
     cin >> nick;     
 
@@ -237,7 +243,7 @@ void IniciarSesion(){
     cin >> pass;     
 
     try{
-        iConU->iniciarSesion(nick, pass);
+        iConU->iniciarSesion(nick, pass, txn);
         sesionI = true;
     }
     catch(const std::exception& e){
@@ -246,6 +252,7 @@ void IniciarSesion(){
 }
 
 void Registro(){
+    pqxx::work txn(c);
     string nick, nombre, pass, email, pfp; 
     int opt; 
 
@@ -265,14 +272,15 @@ void Registro(){
     cin >> pfp; 
 
     try{
-        iConU->registro(nick, nombre, pass, email, pfp, std::move(c));
+        iConU->registro(nick, nombre, pass, email, pfp, txn);
         cout << "¡Usuario registrado!" << endl; 
         cout << "¿Desea iniciar sesión con este usuario?" << endl; 
         cout << "   1: Sí" << endl;
         cout << "   2: No" << endl; 
         cin >> opt; 
         if(opt == 1){
-            iConU->iniciarSesion(nick, pass);
+            pqxx::work txn1(c);
+            iConU->iniciarSesion(nick, pass, txn1);
             sesionI = true;
         }
     }
@@ -287,6 +295,8 @@ void agregarJuegoAlSistema(){
     int plataforma, opt = 0;
     list<string> archivosData;
     list<string> directoriosData; 
+
+    pqxx::work txn(c);
 
     string info;
 
@@ -342,7 +352,7 @@ void agregarJuegoAlSistema(){
 
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     iConJ->recopilarDatos(nombre, platf, imgLink, desc, archivosData, directoriosData);
-    iConJ->agregarJuego();
+    iConJ->agregarJuego(txn);
 }
 
 bool archivoExiste(const char* directorio, string archivo){ 
@@ -560,10 +570,10 @@ void verJuegosPorUsuario(){
         cout << "Inserte el nick del usuario del que quiere ver los datos: ";
         getline(cin, nick);
 
-        juegos = iConJ->verJuegosBackupeadosPorJugador(nick);
+        juegos = iConJ->verJuegosBackupeadosPorJugador(nick, move(c));
     }
     else{
-        juegos = iConJ->verJuegosBackupeadosPorJugador(user->getNick());
+        juegos = iConJ->verJuegosBackupeadosPorJugador(user->getNick(), move(c));
     }
 
     if(!juegos.empty()){
@@ -581,12 +591,16 @@ void verJuegosPorUsuario(){
 
 
 void precargarDatos(){
-    iConU->registro("ElDeLaBarba", "Enzo", "1234", "enzogagu@gmail.com", "google.com", std::move(c));
-    /*
-    iConU->registro("EnzoGularte", "Enzo", "1234", "enzogagu@gmail.com", "google.com");
-    iConU->registro("ElBar", "Bas", "1234", "thatonewithabeard@gmail.com", "instagram.com");
+    /*iConU->registro("ElDeLaBarba", "Enzo", "1234", "enzogagu@gmail.com", "google.com", std::move(c));
 
-    int plat = 1; 
+
+    iConU->registro("EnzoGularte1", "Enzo", "1234", "enzogagu@gmail.com", "google.com", txn);
+
+
+    pqxx::work txn1(c);
+    iConU->registro("ElBar", "Bas", "1234", "thatonewithabeard@gmail.com", "instagram.com", txn1);
+
+    int plat = 0; 
 
     EnumPlataforma plataforma = static_cast<EnumPlataforma>(plat);
 
@@ -631,8 +645,9 @@ void precargarDatos(){
     archivos.push_back("GTASAsf7.b");
     archivos.push_back("GTASAsf8.b");
 
+    pqxx::work txn(c);
     iConJ->recopilarDatos("GTA San Andreas", plataforma, "google.com", "GTA game", archivos, directorios);
-    iConJ->agregarJuego();
+    iConJ->agregarJuego(txn);
 
     directorios.clear();
     archivos.clear();
@@ -642,8 +657,9 @@ void precargarDatos(){
     archivos.push_back("SaveData.sav");
     archivos.push_back("hotline.cfg");
 
+    pqxx::work txn1(c);
     iConJ->recopilarDatos("Hotline Miami", plataforma, "google.com", "GOTY", archivos, directorios);
-    iConJ->agregarJuego();
-    
-*/
+    iConJ->agregarJuego(txn1);
+    */
 }
+

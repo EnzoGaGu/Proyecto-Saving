@@ -9,6 +9,7 @@ class ControladorTiempo : public IControladorTiempo{
         ControladorTiempo();
         DtFechaHora* fechaHoraActual();
         DtFechaHora* fechaModificacionArchivo(string ruta);
+        DtFechaHora* PostgreToDt(string fecha);
         ~ControladorTiempo();
 };
 

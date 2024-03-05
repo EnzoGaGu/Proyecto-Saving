@@ -31,6 +31,8 @@ class Juego{
         list<string> getArchivosData();
         void setDirectoriosData(list<string> directoriosData);
         list<string> getDirectoriosData();
+        string plataformaToString();
+        void stringToPlataforma(string plataforma);
         ~Juego();
 };
 

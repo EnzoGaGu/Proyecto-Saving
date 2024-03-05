@@ -21,6 +21,7 @@ class IControladorTiempo{
     public: 
         virtual DtFechaHora* fechaHoraActual() = 0;
         virtual DtFechaHora* fechaModificacionArchivo(string ruta) = 0;
+        virtual DtFechaHora* PostgreToDt(string fecha) = 0; 
 };
 
 #endif
