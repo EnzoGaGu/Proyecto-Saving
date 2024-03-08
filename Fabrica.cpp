@@ -28,4 +28,8 @@ IControladorTiempo* Fabrica::getControladorTiempo(){
     return new ControladorTiempo();
 }
 
+IControladorEnums* Fabrica::getControladorEnums(){
+    return new ControladorEnums();
+}
+
 Fabrica::~Fabrica(){}

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <pqxx/pqxx>
 #include "Juego.h"
+#include "Fabrica.h"
 
 using namespace std; 
 

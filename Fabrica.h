@@ -8,6 +8,8 @@
 #include "ControladorData.h"
 #include "IControladorTiempo.h"
 #include "ControladorTiempo.h"
+#include "IControladorEnums.h"
+#include "ControladorEnums.h"
 
 
 class Fabrica{
@@ -21,6 +23,7 @@ class Fabrica{
         IControladorJuego* getControladorJuego();
         IControladorData* getControladorData();
         IControladorTiempo* getControladorTiempo();
+        IControladorEnums* getControladorEnums();
 
         ~Fabrica();
 };

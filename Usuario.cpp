@@ -68,8 +68,87 @@ bool Usuario::getAdmin(){
     return this->admin;
 }
 
-void Usuario::addData(Data* data){
+void Usuario::getDataFromDB(pqxx::work& txn){
+    string sql = "SELECT d.* FROM data_agregada da JOIN data d ON da.id_data = d.id_data JOIN usuario u ON da.id_usuario = u.id_usuario WHERE u.id_usuario = " + this->nick;
+    Fabrica* factory = Fabrica::getInstancia();
+    IControladorTiempo* IConT = factory->getControladorTiempo();
+
+    IControladorEnums* IConE = factory->getControladorEnums();
+
+    pqxx::result result(txn.exec(sql));
+
+    for(const auto& row : result){
+        Data* info = new Data();
+
+        info->setIdData(row["id_data"].as<int>());
+        info->setJuego(row["id_juego"].as<int>());
+        info->setNombreData(row["nombre_data"].as<string>());
+        
+        string directorio_local = row["directorio_local"].as<string>();
+
+        list<string> directoriosLocales;
+
+        directorio_local = directorio_local.substr(1, directorio_local.size() - 2);
+
+        istringstream iss(directorio_local);
+        string token; 
+        char delimiter = ',';
+
+        while(getline(iss, token, delimiter)){
+            size_t start = token.find('\'');
+            size_t end = token.find_last_of('\'');
+            directoriosLocales.push_back(token.substr(start + 1, end - start - 1));
+        }
+
+        info->setDirectorioLocal(directoriosLocales);
+        
+        
+        info->setDirectorioCloud(row["directorio_cloud"].as<string>());
+        info->setComentariosJugador(row["comentarios_jugador"].as<string>());
+
+        string fecha_ult_mod = row.at("fecha_ult_modificacion").c_str();
+        DtFechaHora* fechaHora = IConT->PostgreToDt(fecha_ult_mod);
+        info->setFechaUltModificacion(fechaHora);
+
+        string pFuente = row["plataforma_fuente"].as<string>();
+        EnumFuente ePFuente = IConE->stringToFuente(pFuente);
+        info->setPlataformaFuente(ePFuente);
+
+        string tDato = row["tipo_dato"].as<string>();
+        EnumTipoDato eTDato = IConE->stringToTipoDato(tDato);
+        info->setTipoDato(eTDato);
+        
+        info->setConHistorial(row["con_historial"].as<bool>());
+
+        this->dataAgregada.push_back(info);
+    }
+}
+
+void Usuario::addData(Data* data, pqxx::work& txn){
     this->dataAgregada.push_back(data);
+
+    Fabrica* factory = Fabrica::getInstancia();
+    IControladorEnums* IConE = factory->getControladorEnums();
+    
+    string directorios; 
+
+    list<string> directorioLocal = data->getDirectorioLocal();
+
+    list<string>::iterator it; 
+
+    directorios = '{';
+
+    for(it=directorioLocal.begin();it!=directorioLocal.end(); it++){
+        directorios += "'" + (*it) + "',";
+    }
+    
+    directorios.back() = '}';
+
+    string pFuente = IConE->fuenteToString(data->getPlataformaFuente());
+    string tipoDato = IConE->tipoDatoToString(data->getTipoDato());
+
+    txn.exec_params("INSERT INTO data (id_data, id_juego, nombre_data, directorio_local, directorio_cloud, comentarios_jugador, fecha_ult_modificacion, plataforma_fuente, tipo_dato, con_historial) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)", data->getIdData(), data->getJuego(), data->getNombreData(), directorios, data->getDirectorioCloud(), data->getComentariosJugador(), data->getFechaUltModificacion(), pFuente, tipoDato, data->getConHistorial());
+    txn.commit();
 }
 
 Data* Usuario::findData(int idData){

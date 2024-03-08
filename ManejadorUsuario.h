@@ -11,7 +11,7 @@ using namespace std;
 class ManejadorUsuario{
     private:
         ManejadorUsuario();
-        static ManejadorUsuario* instancia;
+        static ManejadorUsuario* instancia; 
     public:
         static ManejadorUsuario* getInstancia();
         list<Usuario*> getUsuarios();

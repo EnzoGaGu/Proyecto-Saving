@@ -2,10 +2,12 @@
 #define USUARIO
 #include <string>
 #include <list>
+#include <pqxx/pqxx>
 #include "DtFechaHora.h"
 #include "Juego.h"
 #include "Data.h"
 #include "DtData.h"
+#include "Fabrica.h"
 
 using namespace std;
 
@@ -36,7 +38,8 @@ class Usuario{
         DtFechaHora* getFechaInsc();
         void setAdmin(bool admin);
         bool getAdmin();
-        void addData(Data* data);
+        void getDataFromDB(pqxx::work& txn);
+        void addData(Data* data, pqxx::work& txn);
         Data* findData(int idData);
         bool memberData(int idData);
         DtData* getDtData(int idData);
