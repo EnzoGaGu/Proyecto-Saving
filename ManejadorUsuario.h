@@ -3,10 +3,10 @@
 #include <list>
 #include <iostream>
 #include <pqxx/pqxx>
-#include "Fabrica.h"
 #include "Usuario.h"
 
 using namespace std;
+
 
 class ManejadorUsuario{
     private:

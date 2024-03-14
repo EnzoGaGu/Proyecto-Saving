@@ -1,5 +1,5 @@
-makeprincipal: DtFechaHora.o DtUsuario.o DtJuego.o DtData.o Usuario.o Sesion.o Juego.o Data.o Configuracion.o ManejadorUsuario.o ManejadorJuego.o ControladorUsuario.o ControladorJuego.o ControladorData.o ControladorTiempo.o Fabrica.o main.o
-	g++ DtFechaHora.o DtUsuario.o DtJuego.o DtData.o Usuario.o Sesion.o Juego.o Data.o Configuracion.o ManejadorUsuario.o ManejadorJuego.o ControladorUsuario.o ControladorJuego.o ControladorData.o ControladorTiempo.o Fabrica.o main.o -g -luuid -o proyecto -lshell32 -lole32 -lpqxx -lpq
+makeprincipal: DtFechaHora.o DtUsuario.o DtJuego.o DtData.o Usuario.o Sesion.o Juego.o Data.o Configuracion.o ManejadorEnums.o ManejadorUsuario.o ManejadorJuego.o ControladorUsuario.o ControladorJuego.o ControladorData.o Fabrica.o main.o
+	g++ DtFechaHora.o DtUsuario.o DtJuego.o DtData.o Usuario.o Sesion.o Juego.o Data.o Configuracion.o ManejadorEnums.o ManejadorUsuario.o ManejadorJuego.o ControladorUsuario.o ControladorJuego.o ControladorData.o Fabrica.o main.o -g -luuid -o proyecto -lshell32 -lole32 -lpqxx -lpq
 
 DtFechaHora.o: DtFechaHora.cpp
 	g++ -g -c DtFechaHora.cpp
@@ -31,6 +31,9 @@ Data.o: Data.cpp
 Configuracion.o: Configuracion.cpp
 	g++ -g -c Configuracion.cpp
 
+ManejadorEnums.o: ManejadorEnums.cpp
+	g++ -g -c ManejadorEnums.cpp
+
 ManejadorUsuario.o: ManejadorUsuario.cpp
 	g++ -g -c ManejadorUsuario.cpp
 
@@ -45,9 +48,6 @@ ControladorJuego.o: ControladorJuego.cpp
 
 ControladorData.o: ControladorData.cpp
 	g++ -g -c ControladorData.cpp
-
-ControladorTiempo.o: ControladorTiempo.cpp
-	g++ -g -c ControladorTiempo.cpp
 
 Fabrica.o: Fabrica.cpp
 	g++ -g -c Fabrica.cpp

@@ -24,12 +24,4 @@ IControladorData* Fabrica::getControladorData(){
     return new ControladorData();
 }
 
-IControladorTiempo* Fabrica::getControladorTiempo(){
-    return new ControladorTiempo();
-}
-
-IControladorEnums* Fabrica::getControladorEnums(){
-    return new ControladorEnums();
-}
-
 Fabrica::~Fabrica(){}

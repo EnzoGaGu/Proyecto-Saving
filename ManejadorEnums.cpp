@@ -1,6 +1,19 @@
-#include "ControladorEnums.h"
+#include "ManejadorEnums.h"
 
-string ControladorEnums::plataformaToString(EnumPlataforma plataforma){
+ManejadorEnums* ManejadorEnums::instancia=NULL;
+
+ManejadorEnums::ManejadorEnums(){}
+
+ManejadorEnums* ManejadorEnums::getInstancia(){
+    if(instancia == NULL){
+        instancia = new ManejadorEnums();
+    }
+    return instancia; 
+}
+
+
+
+string ManejadorEnums::plataformaToString(EnumPlataforma plataforma){
     switch(plataforma){
         case EnumPlataforma::WINDOWS:
             return "WINDOWS";
@@ -21,7 +34,7 @@ string ControladorEnums::plataformaToString(EnumPlataforma plataforma){
     return "";
 }
 
-EnumPlataforma ControladorEnums::stringToPlataforma(string plataforma){
+EnumPlataforma ManejadorEnums::stringToPlataforma(string plataforma){
     EnumPlataforma ePlataforma;
 
     if(plataforma == "WINDOWS"){
@@ -49,7 +62,7 @@ EnumPlataforma ControladorEnums::stringToPlataforma(string plataforma){
     return ePlataforma; 
 }
 
-string ControladorEnums::fuenteToString(EnumFuente fuente){
+string ManejadorEnums::fuenteToString(EnumFuente fuente){
     switch(fuente){
         case EnumFuente::PC:
             return "PC";
@@ -62,7 +75,7 @@ string ControladorEnums::fuenteToString(EnumFuente fuente){
     return "";
 }
 
-EnumFuente ControladorEnums::stringToFuente(string fuente){
+EnumFuente ManejadorEnums::stringToFuente(string fuente){
     EnumFuente plataformaFuente; 
 
     if(fuente == "PC"){
@@ -78,7 +91,7 @@ EnumFuente ControladorEnums::stringToFuente(string fuente){
     return plataformaFuente; 
 }
 
-string ControladorEnums::tipoDatoToString(EnumTipoDato tipoDato){
+string ManejadorEnums::tipoDatoToString(EnumTipoDato tipoDato){
     switch(tipoDato){
         case EnumTipoDato::CONFIG:
             return "CONFIG";
@@ -89,7 +102,7 @@ string ControladorEnums::tipoDatoToString(EnumTipoDato tipoDato){
     return "";
 }
 
-EnumTipoDato ControladorEnums::stringToTipoDato(string tipoDato){
+EnumTipoDato ManejadorEnums::stringToTipoDato(string tipoDato){
     EnumTipoDato eTipoDato; 
 
     if(tipoDato == "PARTIDA"){
@@ -101,3 +114,5 @@ EnumTipoDato ControladorEnums::stringToTipoDato(string tipoDato){
 
     return eTipoDato; 
 }
+
+ManejadorEnums::~ManejadorEnums(){}

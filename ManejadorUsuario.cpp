@@ -40,12 +40,11 @@ bool ManejadorUsuario::member(string nick, pqxx::work& txn){
 
 Usuario* ManejadorUsuario::find(string nick, pqxx::work& txn){
     Usuario* usuario = NULL;
-    Fabrica* factory = Fabrica::getInstancia();
-    IControladorTiempo* IConT = factory->getControladorTiempo();
 
     string sql = "SELECT nick, nombre, pass, email, pfp, fecha_insc, admin FROM usuario WHERE nick = '" + nick + "'";
 
     pqxx::result result(txn.exec(sql));
+
 
     for (const auto& row : result) {
         usuario = new Usuario();
@@ -60,8 +59,11 @@ Usuario* ManejadorUsuario::find(string nick, pqxx::work& txn){
 
         string fecha_insc_str = row.at("fecha_insc").c_str();
 
-        DtFechaHora* fechaHora = IConT->PostgreToDt(fecha_insc_str);
+
+        DtFechaHora* fechaHora = new DtFechaHora();
+        fechaHora->PostgreToDt(fecha_insc_str);
         usuario->setFechaInsc(fechaHora);
+
 
         usuario->setAdmin(row["admin"].as<bool>());
     }

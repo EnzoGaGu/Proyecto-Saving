@@ -69,13 +69,12 @@ bool Usuario::getAdmin(){
 }
 
 void Usuario::getDataFromDB(pqxx::work& txn){
-    string sql = "SELECT d.* FROM data_agregada da JOIN data d ON da.id_data = d.id_data JOIN usuario u ON da.id_usuario = u.id_usuario WHERE u.id_usuario = " + this->nick;
-    Fabrica* factory = Fabrica::getInstancia();
-    IControladorTiempo* IConT = factory->getControladorTiempo();
+    ManejadorEnums* me = ManejadorEnums::getInstancia();
+    string sql = "SELECT d.* FROM data_agregada da JOIN data d ON da.id_data = d.id_data JOIN usuario u ON da.id_usuario = u.nick WHERE u.nick = $1";
 
-    IControladorEnums* IConE = factory->getControladorEnums();
+    //pqxx::result result(txn.exec(sql, this->nick));
 
-    pqxx::result result(txn.exec(sql));
+    pqxx::result result = txn.exec_params(sql, this->nick);
 
     for(const auto& row : result){
         Data* info = new Data();
@@ -83,6 +82,7 @@ void Usuario::getDataFromDB(pqxx::work& txn){
         info->setIdData(row["id_data"].as<int>());
         info->setJuego(row["id_juego"].as<int>());
         info->setNombreData(row["nombre_data"].as<string>());
+
         
         string directorio_local = row["directorio_local"].as<string>();
 
@@ -106,18 +106,24 @@ void Usuario::getDataFromDB(pqxx::work& txn){
         info->setDirectorioCloud(row["directorio_cloud"].as<string>());
         info->setComentariosJugador(row["comentarios_jugador"].as<string>());
 
+
         string fecha_ult_mod = row.at("fecha_ult_modificacion").c_str();
-        DtFechaHora* fechaHora = IConT->PostgreToDt(fecha_ult_mod);
+        DtFechaHora* fechaHora = new DtFechaHora();
+        fechaHora->PostgreToDt(fecha_ult_mod);
         info->setFechaUltModificacion(fechaHora);
 
+
+
         string pFuente = row["plataforma_fuente"].as<string>();
-        EnumFuente ePFuente = IConE->stringToFuente(pFuente);
+        EnumFuente ePFuente = me->stringToFuente(pFuente);
         info->setPlataformaFuente(ePFuente);
 
         string tDato = row["tipo_dato"].as<string>();
-        EnumTipoDato eTDato = IConE->stringToTipoDato(tDato);
+        EnumTipoDato eTDato = me->stringToTipoDato(tDato);
         info->setTipoDato(eTDato);
         
+        
+
         info->setConHistorial(row["con_historial"].as<bool>());
 
         this->dataAgregada.push_back(info);
@@ -125,18 +131,15 @@ void Usuario::getDataFromDB(pqxx::work& txn){
 }
 
 void Usuario::addData(Data* data, pqxx::work& txn){
+    ManejadorEnums* me = ManejadorEnums::getInstancia();
     this->dataAgregada.push_back(data);
-
-    Fabrica* factory = Fabrica::getInstancia();
-    IControladorEnums* IConE = factory->getControladorEnums();
     
-    string directorios; 
+    string directorios = "{"; 
 
     list<string> directorioLocal = data->getDirectorioLocal();
 
     list<string>::iterator it; 
 
-    directorios = '{';
 
     for(it=directorioLocal.begin();it!=directorioLocal.end(); it++){
         directorios += "'" + (*it) + "',";
@@ -144,10 +147,12 @@ void Usuario::addData(Data* data, pqxx::work& txn){
     
     directorios.back() = '}';
 
-    string pFuente = IConE->fuenteToString(data->getPlataformaFuente());
-    string tipoDato = IConE->tipoDatoToString(data->getTipoDato());
+    string pFuente = me->fuenteToString(data->getPlataformaFuente());
+    string tipoDato = me->tipoDatoToString(data->getTipoDato());
 
-    txn.exec_params("INSERT INTO data (id_data, id_juego, nombre_data, directorio_local, directorio_cloud, comentarios_jugador, fecha_ult_modificacion, plataforma_fuente, tipo_dato, con_historial) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)", data->getIdData(), data->getJuego(), data->getNombreData(), directorios, data->getDirectorioCloud(), data->getComentariosJugador(), data->getFechaUltModificacion(), pFuente, tipoDato, data->getConHistorial());
+
+    txn.exec_params("INSERT INTO data (id_data, id_juego, nombre_data, directorio_local, directorio_cloud, comentarios_jugador, fecha_ult_modificacion, plataforma_fuente, tipo_dato, con_historial) VALUES ($1, $2, $3, $4, $5, $6, to_custom_type($7, $8, $9, $10, $11, $12), $13, $14, $15)", data->getIdData(), data->getJuego(), data->getNombreData(), directorios, data->getDirectorioCloud(), data->getComentariosJugador(), data->getFechaUltModificacion()->getDia(), data->getFechaUltModificacion()->getMes(), data->getFechaUltModificacion()->getAnio(), data->getFechaUltModificacion()->getHora(), data->getFechaUltModificacion()->getMinuto(), data->getFechaUltModificacion()->getSegundo(), pFuente, tipoDato, data->getConHistorial());
+    txn.exec_params("INSERT INTO data_agregada (id_usuario, id_data) VALUES ($1, $2)", this->nick, data->getIdData());
     txn.commit();
 }
 

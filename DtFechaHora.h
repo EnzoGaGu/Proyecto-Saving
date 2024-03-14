@@ -1,9 +1,20 @@
 #ifndef DTFECHAHORA
 #define DTFECHAHORA
+#include <windows.h>
 #include <iostream>
-#include <ctime>
+#include <string>
+#include <fstream>
+#include <winbase.h>
+#include <list>
+#include <algorithm>
+#include <chrono>
+#include <ctime> 
+#include <filesystem>
 
-using namespace std;//para usar string
+
+namespace fs = std::filesystem;
+using namespace std;
+
 
 class DtFechaHora{
 private:
@@ -25,6 +36,9 @@ public:
 	int getSegundo();
 
 	void setFechaHoraActual();
+    void fechaModificacionArchivo(string ruta);
+    void PostgreToDt(string fecha);
+	string dtToPostgre();
 
 	~DtFechaHora();//destructor
 

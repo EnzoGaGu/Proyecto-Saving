@@ -12,8 +12,9 @@ Sesion* Sesion::getSesion(){
     return instancia;
 }
 
-void Sesion::setUsuario(Usuario* usuarioActual){
+void Sesion::setUsuario(Usuario* usuarioActual, pqxx::work& txn){
     this->usuarioActual = usuarioActual;
+    this->usuarioActual->getDataFromDB(txn);
 }
 
 Usuario* Sesion::getUsuario(){

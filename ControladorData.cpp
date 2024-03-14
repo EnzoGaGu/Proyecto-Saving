@@ -239,7 +239,7 @@ void ControladorData::backupearDatos(bool conReemplazo){
 }
 
 //Crea un objeto de clase Data, y lo almacena en el usuario que inició sesión
-void ControladorData::crearVirtualData(int idJuego, string nombreData, string comentariosJugador, DtFechaHora* fechaCreacionData, EnumFuente plataforma, EnumTipoDato tipoDato, bool conReemplazo){
+void ControladorData::crearVirtualData(int idJuego, string nombreData, string comentariosJugador, DtFechaHora* fechaCreacionData, EnumFuente plataforma, EnumTipoDato tipoDato, bool conReemplazo, pqxx::work& txn){
     ManejadorJuego* mj = ManejadorJuego::getInstancia();
 
     Juego* juego = mj->find(idJuego);
@@ -273,7 +273,7 @@ void ControladorData::crearVirtualData(int idJuego, string nombreData, string co
 
     if(!encontrado){
         Data* newData = new Data(idData, juego->getIdJuego(), nombreData, this->directorioLocalCompleto, this->directorioBackup, comentariosJugador, fechaCreacionData, plataforma, tipoDato, conHistorial);
-        user->addData(newData);
+        user->addData(newData, txn);
     }
     
     this->directorioBackup = "";
@@ -304,18 +304,17 @@ list<DtData*> ControladorData::verVirtualData(EnumTipoDato tipoDato){
 void ControladorData::actualizarFechaVirutalData(int idData){
     Sesion* sesion = Sesion::getSesion();
     Usuario* user = sesion->getUsuario();
-    IControladorTiempo* iConT = new ControladorTiempo();
 
     Data* data = user->findData(idData);
     
-    DtFechaHora* fechaActual = iConT->fechaHoraActual();
+    DtFechaHora* fechaActual;
+    fechaActual->setFechaHoraActual();
 
     data->setFechaUltModificacion(fechaActual);
 }
 
 //Comprueba si hay archivos del backup cuyas versiones locales son más nuevas que éste, y devuelve una lista de strings con las direcciones locales de los que encuentre. Si no encuentra ninguno, devuelve una lista vacía  
 list<string> ControladorData::listarArchivosDesactualizados(int idData){
-    IControladorTiempo* iConT = new ControladorTiempo(); 
     
     Sesion* sesion = Sesion::getSesion();
     Usuario* user = sesion->getUsuario();
@@ -335,7 +334,7 @@ list<string> ControladorData::listarArchivosDesactualizados(int idData){
         //Si el archivo local todavía existe 
         if(fs::exists(*st)){       
             //Y se comprueba si alguno de los archivos locales se modificó después del último update al data       
-            fechaModificacionArchivo = iConT->fechaModificacionArchivo(*st);
+            fechaModificacionArchivo->fechaModificacionArchivo(*st);
             if(fechaModificacionArchivo > fechaModificacionData){
                 //desactualizado = true; 
                 archivosNuevos.push_back(*st);

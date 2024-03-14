@@ -6,11 +6,6 @@
 #include "ControladorJuego.h"
 #include "IControladorData.h"
 #include "ControladorData.h"
-#include "IControladorTiempo.h"
-#include "ControladorTiempo.h"
-#include "IControladorEnums.h"
-#include "ControladorEnums.h"
-
 
 class Fabrica{
     private:
@@ -22,8 +17,6 @@ class Fabrica{
         IControladorUsuario* getControladorUsuario();        
         IControladorJuego* getControladorJuego();
         IControladorData* getControladorData();
-        IControladorTiempo* getControladorTiempo();
-        IControladorEnums* getControladorEnums();
 
         ~Fabrica();
 };

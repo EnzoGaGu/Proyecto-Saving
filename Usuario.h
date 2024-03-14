@@ -7,7 +7,7 @@
 #include "Juego.h"
 #include "Data.h"
 #include "DtData.h"
-#include "Fabrica.h"
+#include "ManejadorEnums.h"
 
 using namespace std;
 

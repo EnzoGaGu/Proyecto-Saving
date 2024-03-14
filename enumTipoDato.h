@@ -6,5 +6,4 @@ enum EnumTipoDato{
     CONFIG
 };
 
-
 #endif

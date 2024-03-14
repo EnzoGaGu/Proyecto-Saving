@@ -5,6 +5,7 @@
 #include <pqxx/pqxx>
 #include "Juego.h"
 #include "Fabrica.h"
+#include "ManejadorEnums.h"
 
 using namespace std; 
 

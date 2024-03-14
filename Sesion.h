@@ -12,7 +12,7 @@ class Sesion{
         Usuario* usuarioActual;
     public:
         static Sesion* getSesion();
-        void setUsuario(Usuario*);
+        void setUsuario(Usuario*, pqxx::work& txn);
         Usuario* getUsuario();
         ~Sesion();
 };

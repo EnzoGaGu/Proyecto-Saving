@@ -9,10 +9,11 @@ void ControladorUsuario::iniciarSesion(string nick, string pass, pqxx::work& txn
     Sesion* sesion = Sesion::getSesion();
     Usuario* user;
 
+
     if(mu->member(nick, txn)){
         user = (*mu).find(nick, txn);
         if(user->getPass() == pass){
-            sesion->setUsuario(user);
+            sesion->setUsuario(user, txn);
         } 
         else{
             throw invalid_argument("La contraseña no es correcta.");

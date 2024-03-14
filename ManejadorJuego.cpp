@@ -13,9 +13,7 @@ ManejadorJuego* ManejadorJuego::getInstancia(){
 
 
 void ManejadorJuego::getFromDB(pqxx::work& txn){
-    Fabrica* factory = Fabrica::getInstancia();
-    IControladorEnums* IConE = factory->getControladorEnums();
-
+    ManejadorEnums* me = ManejadorEnums::getInstancia();
     string sql = "SELECT * FROM juego";
 
     pqxx::result result(txn.exec(sql));
@@ -29,7 +27,7 @@ void ManejadorJuego::getFromDB(pqxx::work& txn){
         game->setNombre(row["nombre"].as<string>());
 
         string plataforma = row["plataforma"].as<string>();
-        EnumPlataforma enumPlat = IConE->stringToPlataforma(plataforma);
+        EnumPlataforma enumPlat = me->stringToPlataforma(plataforma);
         game->setPlataforma(enumPlat);
 
         game->setImgLink(row["img_link"].as<string>());
@@ -78,9 +76,7 @@ void ManejadorJuego::getFromDB(pqxx::work& txn){
 }
 
 void ManejadorJuego::add(Juego* juego, pqxx::work& txn){
-    Fabrica* factory = Fabrica::getInstancia();
-    IControladorEnums* IConE = factory->getControladorEnums();
-    
+    ManejadorEnums* me = ManejadorEnums::getInstancia();
     juegos.push_back(juego);
 
     string archivos, directorios; 
@@ -103,7 +99,7 @@ void ManejadorJuego::add(Juego* juego, pqxx::work& txn){
     }
     directorios.back() = '}';
 
-    string plat = IConE->plataformaToString(juego->getPlataforma());
+    string plat = me->plataformaToString(juego->getPlataforma());
 
     txn.exec_params("INSERT INTO juego (id_juego, nombre, plataforma, img_link, descripcion, archivos_data, directoriosdata) VALUES ($1, $2, $3, $4, $5, $6, $7)", juego->getIdJuego(), juego->getNombre(), plat, juego->getImgLink(), juego->getDesc(), archivos, directorios);
 

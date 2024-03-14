@@ -55,6 +55,55 @@ void DtFechaHora::setFechaHoraActual(){
 	this->segundo = ltm->tm_sec;
 }
 
+
+void DtFechaHora::fechaModificacionArchivo(string ruta){
+    DtFechaHora* fechaModificacion; 
+    
+    try {
+        // Obtén la fecha de modificación del archivo
+        const auto fileTime = fs::last_write_time(ruta);
+
+        // Convierte el tiempo del archivo a un formato de tiempo legible
+        const auto durationSinceEpoch = fileTime.time_since_epoch();
+        const auto systemTimePoint = chrono::time_point<chrono::system_clock>(durationSinceEpoch);
+        time_t time = chrono::system_clock::to_time_t(systemTimePoint);
+
+        tm timeInfo = *localtime(&time);
+
+        fechaModificacion = new DtFechaHora();
+                    
+        // Imprime la fecha de modificación del archivo
+        std::cout << "Fecha de modificación: " << std::ctime(&time) << std::endl;
+        } catch (const std::filesystem::filesystem_error& ex) {
+            std::cerr << "Error al obtener la fecha de modificación: " << ex.what() << std::endl;
+    }
+}
+
+void DtFechaHora::PostgreToDt(string fecha){
+    string fechaMod;
+
+    fechaMod = fecha.substr(1, fecha.size()-2);
+
+    stringstream ss(fechaMod);
+
+
+    int dia, mes, anio, hora, minuto, segundo; 
+    char comma; 
+
+    ss >> dia >> comma >> mes >> comma >> anio >> comma >> hora >> comma >> minuto >> comma >> segundo; 
+
+	
+
+	this->dia = dia;
+	this->mes = mes; 
+	this->anio = anio; 
+	this->hora = hora; 
+	this->minuto = minuto; 
+	this->segundo = segundo;
+
+	cout << this; 
+}
+
 DtFechaHora::~DtFechaHora(){}//destructor
 
 ostream& operator <<(ostream& salida,const DtFechaHora& a) {

@@ -16,7 +16,6 @@
 #include "IControladorUsuario.h"
 #include "IControladorJuego.h"
 #include "IControladorData.h"
-#include "IControladorTiempo.h"
 #include "Sesion.h"
 #include "Fabrica.h"
 #include <winerror.h>
@@ -35,7 +34,6 @@ Fabrica* factory;
 IControladorUsuario* iConU;
 IControladorJuego* iConJ;
 IControladorData* iConD; 
-IControladorTiempo* iConT;
 Sesion* sesion;
 bool sesionI;
 pqxx::connection c("dbname=postgres user=postgres password=admin hostaddr=127.0.0.1 port=5432");
@@ -96,7 +94,6 @@ int main(){
     iConU = factory->getControladorUsuario();
     iConJ = factory->getControladorJuego();
     iConD = factory->getControladorData();
-    iConT = factory->getControladorTiempo();
     sesion = Sesion::getSesion();
 
     pqxx::work txnini(c);
@@ -387,6 +384,7 @@ bool archivoExiste(const char* directorio, string archivo){
 }
 
 void respaldarPartida(){
+    pqxx::work txn(c);
     int idJuego;
     int cont; 
     int opt = 0; 
@@ -499,7 +497,7 @@ void respaldarPartida(){
 
     fechaHora->setFechaHoraActual();
 
-    iConD->crearVirtualData(idJuego, nombreData, comentariosJugador, fechaHora, plataformaFuente, tipoDato, conReemplazo);
+    iConD->crearVirtualData(idJuego, nombreData, comentariosJugador, fechaHora, plataformaFuente, tipoDato, conReemplazo, txn);
 }
 
 void verRespaldosPartida(){
@@ -662,4 +660,3 @@ void precargarDatos(){
     iConJ->agregarJuego(txn1);
     */
 }
-
