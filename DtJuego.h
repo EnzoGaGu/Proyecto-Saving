@@ -6,6 +6,7 @@
 #include "DtFechaHora.h"
 #include "Configuracion.h"
 #include "enumPlataforma.h"
+#include "ManejadorEnums.h"
 
 class DtJuego{
     private:

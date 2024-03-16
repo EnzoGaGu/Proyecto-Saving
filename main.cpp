@@ -522,6 +522,9 @@ void actualizarRespaldos(){
     Sesion* sesion = Sesion::getSesion();
     Usuario* user = sesion->getUsuario();
 
+    int idData; 
+    string nombreData;
+
     list<DtData*> userData = user->listData();
     list<DtData*>::iterator dt; 
 
@@ -532,18 +535,31 @@ void actualizarRespaldos(){
     for(dt = userData.begin(); dt!=userData.end(); dt++){
         localDataPath = iConD->listarArchivosDesactualizados((*dt)->getIdData());
 
+        string pathCloud = (*dt)->getDirectorioCloud();
+
+        string nombreJuego = iConJ->nombreDeJuego((*dt)->getJuego()) + "/";
+
+        size_t pos = pathCloud.find(nombreJuego);
+        if(pos != string::npos){
+            pathCloud.erase(pos - 1);
+        }
+
         if(!localDataPath.empty()){
             for(pt=localDataPath.begin();pt!=localDataPath.end();pt++){
                 iConD->seleccionarDirectorioLocal((*pt));
+                
 
-                iConD->crearCarpetaBackup((*dt)->getDirectorioCloud(), (*dt)->getJuego(), (*dt)->getNombreData(), !(*dt)->getConHistorial());
+                iConD->crearCarpetaBackup(pathCloud, (*dt)->getJuego(), (*dt)->getNombreData(), !(*dt)->getConHistorial());
 
                 iConD->backupearDatos(!(*dt)->getConHistorial());
             }
 
-            iConD->actualizarFechaVirutalData((*dt)->getIdData());
+            idData = (*dt)->getIdData();
+            nombreData = (*dt)->getNombreData();
 
-            cout << "Se actualizaron los archivos del backup " << (*dt)->getNombreData() << endl; 
+            iConD->actualizarFechaVirutalData(idData);
+
+            cout << "Se actualizaron los archivos del backup " << nombreData << endl; 
         }
 
     }

@@ -47,9 +47,11 @@ DtJuego::~DtJuego(){}
 
 
 ostream& operator <<(ostream& salida,const DtJuego& a) {
+    ManejadorEnums* me = ManejadorEnums::getInstancia();
+    
 	cout << "ID: " << a.idJuego << endl;
     cout << "Nombre: " << a.nombre << endl;
-    cout << "Plataforma: " << static_cast<EnumPlataforma>(a.plataforma) << endl;
+    cout << "Plataforma: " << me->plataformaToString(a.plataforma) << endl;
     cout << "Descripción: " << a.desc << endl;
 
 

@@ -272,7 +272,12 @@ void ControladorData::crearVirtualData(int idJuego, string nombreData, string co
 
 
     if(!encontrado){
-        Data* newData = new Data(idData, juego->getIdJuego(), nombreData, this->directorioLocalCompleto, this->directorioBackup, comentariosJugador, fechaCreacionData, plataforma, tipoDato, conHistorial);
+        string directorioCloud = this->directorioBackup;
+        if(conHistorial){
+            directorioCloud.erase(directorioCloud.size() - 2); 
+        }
+
+        Data* newData = new Data(idData, juego->getIdJuego(), nombreData, this->directorioLocalCompleto, directorioCloud, comentariosJugador, fechaCreacionData, plataforma, tipoDato, conHistorial);
         user->addData(newData, txn);
     }
     
@@ -314,19 +319,21 @@ void ControladorData::actualizarFechaVirutalData(int idData){
 }
 
 //Comprueba si hay archivos del backup cuyas versiones locales son más nuevas que éste, y devuelve una lista de strings con las direcciones locales de los que encuentre. Si no encuentra ninguno, devuelve una lista vacía  
-list<string> ControladorData::listarArchivosDesactualizados(int idData){
-    
+bool ControladorData::archivosDesactualizados(int idData){
     Sesion* sesion = Sesion::getSesion();
     Usuario* user = sesion->getUsuario();
     Data* data = user->findData(idData);
     list<string> directorioLocal = data->getDirectorioLocal();
 
-    list<string> archivosNuevos; 
+    bool desactualizado;
 
     //bool desactualizado = false; 
 
+
+
     DtFechaHora* fechaModificacionData = data->getFechaUltModificacion();
-    DtFechaHora* fechaModificacionArchivo; 
+    DtFechaHora* fechaModificacionArchivo = new DtFechaHora(); 
+
 
     list<string>::iterator st; 
     //Revisar cada archivo local registrado en el Data
@@ -335,14 +342,25 @@ list<string> ControladorData::listarArchivosDesactualizados(int idData){
         if(fs::exists(*st)){       
             //Y se comprueba si alguno de los archivos locales se modificó después del último update al data       
             fechaModificacionArchivo->fechaModificacionArchivo(*st);
+
+            cout << "-----------------------------" << endl;
+            cout << (*fechaModificacionArchivo) << endl;
+
+
+            cout << "Archivo: " << (*st) << endl; 
+
+            cout << (*fechaModificacionData) << endl; 
+
+            cout << "-----------------------------" << endl;
+
             if(fechaModificacionArchivo > fechaModificacionData){
-                //desactualizado = true; 
-                archivosNuevos.push_back(*st);
+                //Retorna true
+                desactualizado = true; 
             }
 
         }
     }
-    return archivosNuevos; 
+    return desactualizado; 
 }
 
 

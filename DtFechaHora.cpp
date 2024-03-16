@@ -57,25 +57,27 @@ void DtFechaHora::setFechaHoraActual(){
 
 
 void DtFechaHora::fechaModificacionArchivo(string ruta){
-    DtFechaHora* fechaModificacion; 
+    DtFechaHora* fechaModificacion = new DtFechaHora(); 
     
     try {
-        // Obtén la fecha de modificación del archivo
-        const auto fileTime = fs::last_write_time(ruta);
+		namespace fs = std::filesystem;
 
-        // Convierte el tiempo del archivo a un formato de tiempo legible
-        const auto durationSinceEpoch = fileTime.time_since_epoch();
-        const auto systemTimePoint = chrono::time_point<chrono::system_clock>(durationSinceEpoch);
-        time_t time = chrono::system_clock::to_time_t(systemTimePoint);
+		fs::file_time_type ftime = fs::last_write_time(ruta);
 
-        tm timeInfo = *localtime(&time);
+		auto sctp = std::chrono::time_point_cast<std::chrono::system_clock::duration>(ftime - fs::file_time_type::clock::now() + std::chrono::system_clock::now());
+        auto cftime = std::chrono::system_clock::to_time_t(sctp);
 
-        fechaModificacion = new DtFechaHora();
-                    
-        // Imprime la fecha de modificación del archivo
-        std::cout << "Fecha de modificación: " << std::ctime(&time) << std::endl;
-        } catch (const std::filesystem::filesystem_error& ex) {
-            std::cerr << "Error al obtener la fecha de modificación: " << ex.what() << std::endl;
+		std::tm* tm_time = std::localtime(&cftime);
+
+		// Obtener los componentes de la fecha
+		this->anio = tm_time->tm_year + 1900; // El año actual es el año desde 1900
+		this->mes = tm_time->tm_mon + 1;     // tm_mon comienza en 0 para enero
+		this->dia = tm_time->tm_mday;          // Día del mes
+		this->hora = tm_time->tm_hour;         // Hora del día
+		this->minuto = tm_time->tm_min;        // Minuto de la hora
+		this->segundo = tm_time->tm_sec;        // Segundo del minuto
+    } catch (const std::filesystem::filesystem_error& ex) {
+        std::cerr << "Error al obtener la fecha de modificación: " << ex.what() << std::endl;
     }
 }
 
@@ -100,8 +102,6 @@ void DtFechaHora::PostgreToDt(string fecha){
 	this->hora = hora; 
 	this->minuto = minuto; 
 	this->segundo = segundo;
-
-	cout << this; 
 }
 
 DtFechaHora::~DtFechaHora(){}//destructor

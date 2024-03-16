@@ -61,12 +61,14 @@ DtData::~DtData(){}
 
 
 ostream& operator <<(ostream& salida,const DtData& a) {
+    ManejadorEnums* me = ManejadorEnums::getInstancia();
+
 	cout << "ID: " << a.idData << endl;
     cout << "Nombre: " << a.nombreData << endl; 
     cout << "Id del juego: " << a.idJuego << endl;
     cout << "Comentarios del jugador: " << a.comentariosJugador << endl;
-    cout << "Plataforma de los datos: " << a.plataformaFuente << endl; 
-    cout << "Tipo de datos: " << a.tipoDato << endl; 
+    cout << "Plataforma de los datos: " << me->fuenteToString(a.plataformaFuente) << endl; 
+    cout << "Tipo de datos: " << me->tipoDatoToString(a.tipoDato) << endl; 
 
 
     cout << "Directorio local de los archivos: " << endl; 

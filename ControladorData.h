@@ -35,7 +35,7 @@ class ControladorData : public IControladorData{
         void crearVirtualData(int idJuego, string nombreData, string comentariosJugador, DtFechaHora* fechaCreacionData, EnumFuente plataforma, EnumTipoDato tipoDato, bool conReemplazo, pqxx::work& txn);
         void actualizarFechaVirutalData(int idData);
         list<DtData*> verVirtualData(EnumTipoDato tipoDato);
-        list<string> listarArchivosDesactualizados(int idData);
+        bool archivosDesactualizados(int idData);
         ~ControladorData();
 };
 

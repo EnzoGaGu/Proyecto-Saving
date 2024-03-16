@@ -4,6 +4,7 @@
 #include "DtFechaHora.h"
 #include "EnumFuente.h"
 #include "enumTipoDato.h"
+#include "ManejadorEnums.h"
 #include "Juego.h"
 
 using namespace std;

@@ -8,8 +8,10 @@ void ControladorJuego::inicializar(pqxx::work& txn){
     mj->getFromDB(txn);
 }
 
-void ControladorJuego::seleccionarJuego(int idJuego){
-
+string ControladorJuego::nombreDeJuego(int idJuego){
+    ManejadorJuego* mj = ManejadorJuego::getInstancia();
+    Juego* juegoSel = mj->find(idJuego);
+    return juegoSel->getNombre();
 }
 
 //Recopila datos de un juego a agregar dados por el usuario, y los guarda en el controlador.
