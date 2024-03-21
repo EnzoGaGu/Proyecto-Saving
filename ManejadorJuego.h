@@ -21,6 +21,7 @@ class ManejadorJuego{
         bool member(int idJuego);
         Juego* find(int idJuego);
         void remove(int idJuego);
+        void modify(int idJuego, string nombre, string imgLink, string desc, pqxx::work& txn);
         list<Juego*> listar();
         ~ManejadorJuego();
 };

@@ -52,6 +52,23 @@ void ManejadorJuego::getFromDB(pqxx::work& txn){
 
         game->setArchivosData(archivosData);
 
+        string archivos_config = row["archivos_config"].as<string>();
+
+        list<string> archivosConfig;
+        // Elimina los caracteres especiales y el corchete al principio y al final
+        archivos_config = archivos_config.substr(1, archivos_config.size() - 2);
+        
+        istringstream isc(archivos_config);
+
+        while (getline(isc, token, delimiter)) {
+            // Elimina las comillas y espacios alrededor del nombre de archivo
+            size_t start = token.find('\'');
+            size_t end = token.find_last_of('\'');
+            archivosConfig.push_back(token.substr(start + 1, end - start - 1));
+        }
+
+        game->setArchivosConfig(archivosConfig);
+
 
         string directorios_data = row["directoriosdata"].as<string>();
         
@@ -79,10 +96,11 @@ void ManejadorJuego::add(Juego* juego, pqxx::work& txn){
     ManejadorEnums* me = ManejadorEnums::getInstancia();
     juegos.push_back(juego);
 
-    string archivos, directorios; 
+    string archivos, directorios, config; 
 
     list<string> archivosJuego = juego->getArchivosData(); 
     list<string> directoriosJuego = juego->getDirectoriosData(); 
+    list<string> archivosConfig = juego->getArchivosConfig();
 
     list<string>::iterator it; 
 
@@ -99,9 +117,15 @@ void ManejadorJuego::add(Juego* juego, pqxx::work& txn){
     }
     directorios.back() = '}';
 
+    config = '{';
+    for(it=archivosConfig.begin();it!=archivosConfig.end(); it++){
+        config += "'" + (*it) + "',";
+    }
+    config.back() = '}';
+
     string plat = me->plataformaToString(juego->getPlataforma());
 
-    txn.exec_params("INSERT INTO juego (id_juego, nombre, plataforma, img_link, descripcion, archivos_data, directoriosdata) VALUES ($1, $2, $3, $4, $5, $6, $7)", juego->getIdJuego(), juego->getNombre(), plat, juego->getImgLink(), juego->getDesc(), archivos, directorios);
+    txn.exec_params("INSERT INTO juego (id_juego, nombre, plataforma, img_link, descripcion, archivos_data, directoriosdata, archivos_config) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)", juego->getIdJuego(), juego->getNombre(), plat, juego->getImgLink(), juego->getDesc(), archivos, directorios, config);
 
     txn.commit();
     //cout << "Ingresado con éxito";
@@ -139,6 +163,31 @@ void ManejadorJuego::remove(int idJuego){
             juegos.remove(*it);
             delete juego;
         }
+    }
+}
+
+void ManejadorJuego::modify(int idJuego, string nombre, string imgLink, string desc, pqxx::work& txn){
+
+    Juego* juego = find(idJuego);
+
+    if(nombre!=""){
+        juego->setNombre(nombre);
+        txn.exec_params("UPDATE juego SET nombre = $1 WHERE id_juego = $2;", nombre, idJuego);
+        txn.commit();
+    }
+
+    if(imgLink!=""){
+        juego->setImgLink(imgLink);
+        txn.exec_params("UPDATE juego SET img_link = $1 WHERE id_juego = $2;", imgLink, idJuego);
+        txn.commit();
+    }
+
+    if(desc!=""){
+        juego->setDesc(desc);
+
+        cout << desc; 
+        txn.exec_params("UPDATE juego SET descripcion = $1 WHERE id_juego = $2;", desc, idJuego);
+        txn.commit();
     }
 }
 

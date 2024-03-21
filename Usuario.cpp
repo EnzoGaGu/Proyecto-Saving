@@ -221,4 +221,10 @@ void Usuario::removeData(int idData){
     }
 }
 
-Usuario::~Usuario(){}
+Usuario::~Usuario(){
+    delete fechaInsc; 
+
+    for(auto& data : dataAgregada){
+        delete data; 
+    }
+}

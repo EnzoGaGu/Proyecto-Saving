@@ -55,11 +55,11 @@ void agregarJuegoAlSistema();
 
 
 //Respaldar una partida.
-void respaldarPartida();
+void respaldarDatos();
 
 
-//Ver todas las partidas respaldadas por el usuario que inició sesión
-void verRespaldosPartida();
+//Ver los datos respaldados por el usuario que inició sesión
+void verRespaldos(int opcion);
 
 //Actualizar todos los respaldos del usuario, comprobando si los archivos de éstos están up-to-date con los del sistema. 
 void actualizarRespaldos();
@@ -78,6 +78,8 @@ void verJuegosPorUsuario();
 
 //void copiarArchivoReemplazando(const char* ubIn, const char* ubBackup, string nombreArchivo, const char* nombreJuego, const char* nombreSaved);
 
+//Permite a un admin modificar los datos de un juego ya agregado al sistema
+void modificarDatosJuego();
 
 
 int main(){
@@ -136,49 +138,45 @@ int main(){
         while(salir == false){
             if(!sesion->getUsuario()->getAdmin()){                                          //Si es usuario normal
                 cout << "================================================" << endl;
-                cout << "   1: Crear respaldo de partidas" << endl;
-                cout << "   2: Crear respaldo de configuraciones" << endl;
-                cout << "   3: Actualizar respaldos" << endl;
-                cout << "   4: Ver juegos agregados" << endl;
-                cout << "   5: Ver respaldos de partidas" << endl;
-                cout << "   6: Ver respaldos de configuraciones" << endl;
-                cout << "   7: Ver respaldos" << endl;
-                cout << "   8: Subir a la nube" << endl;
-                cout << "   9: Descargar de la nube" << endl;
-                cout << "   10: Actualizar rutas juego" << endl;
-                cout << "   11: Cambiar usuario" << endl;
+                cout << "   1: Crear respaldo" << endl;
+                cout << "   2: Actualizar respaldos" << endl;
+                cout << "   3: Ver juegos agregados" << endl;
+                cout << "   4: Ver respaldos de partidas" << endl;
+                cout << "   5: Ver respaldos de configuraciones" << endl;
+                cout << "   6: Ver todos los respaldos" << endl;
+                cout << "   7: Subir a la nube" << endl;
+                cout << "   8: Descargar de la nube" << endl;
+                cout << "   9: Actualizar rutas juego" << endl;
+                cout << "   10: Cambiar usuario" << endl;
                 cout << "   0: Salir"   << endl;
                 cout << "Ingrese una opción: " << endl;
                 cin >> opt; 
 
                 switch(opt){
                     case 1: 
-                        respaldarPartida();
+                        respaldarDatos();
                     break;
                     case 2: 
-                    break;
-                    case 3: 
                         actualizarRespaldos();
                     break;
-                    case 4: 
+                    case 3: 
                         verJuegosPorUsuario();
                     break;
+                    case 4: 
+                        verRespaldos(0);
+                    break;
                     case 5: 
-                        verRespaldosPartida();
+                        verRespaldos(1);
                     break;
                     case 6: 
                     break;
-                    case 7: 
+                    case 7:
                     break;
                     case 8: 
                     break;
                     case 9: 
                     break;
                     case 10: 
-                    break;
-                    case 11: 
-                    break;
-                    case 12: 
                     break;
                     case 0:
                         salir = true; 
@@ -212,6 +210,7 @@ int main(){
                         verJuegosPorUsuario();
                     break;
                     case 4: 
+                        modificarDatosJuego();
                     break;
                     case 5: 
                     break; 
@@ -292,6 +291,7 @@ void agregarJuegoAlSistema(){
     int plataforma, opt = 0;
     list<string> archivosData;
     list<string> directoriosData; 
+    list<string> archivosConfig;
 
     pqxx::work txn(c);
 
@@ -312,6 +312,8 @@ void agregarJuegoAlSistema(){
     cout << "Ingrese el número de la plataforma a la que pertenece el juego: ";
     cin >> plataforma; 
     
+    plataforma--;
+
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     EnumPlataforma platf = (EnumPlataforma)plataforma; 
 
@@ -325,15 +327,21 @@ void agregarJuegoAlSistema(){
         cout << "Ingrese la ruta de la carpeta donde el juego guarda sus archivos: ";
         getline(cin, info);
 
+        for (char& c : info) {
+            if (c == '\\') {
+                c = '/';
+            }
+        }
+
         directoriosData.push_back(info);
 
         cout << "   1- Ingresar otra dirección" << endl; 
         cout << "   2- Continuar" << endl; 
         cout << "Ingrese una opción:"; 
         cin >> opt; 
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }while(opt!=2);
 
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     opt = 0;
     do{
         cout << "Ingrese el nombre del archivo de guardado del juego (incluyendo extensión): ";
@@ -345,10 +353,25 @@ void agregarJuegoAlSistema(){
         cout << "   2- Continuar" << endl; 
         cout << "Ingrese una opción:"; 
         cin >> opt; 
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }while(opt!=2);
 
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    iConJ->recopilarDatos(nombre, platf, imgLink, desc, archivosData, directoriosData);
+    opt = 0; 
+    do{
+        cout << "Ingrese el nombre del archivo de configuración del juego (incluyendo extensión): ";
+        getline(cin, info);
+
+
+        archivosConfig.push_back(info);
+
+        cout << "   1- Ingresar otro archivo" << endl; 
+        cout << "   2- Continuar" << endl; 
+        cout << "Ingrese una opción:"; 
+        cin >> opt; 
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }while(opt!=2);
+
+    iConJ->recopilarDatos(nombre, platf, imgLink, desc, archivosData, archivosConfig, directoriosData);
     iConJ->agregarJuego(txn);
 }
 
@@ -383,7 +406,7 @@ bool archivoExiste(const char* directorio, string archivo){
     return existe; 
 }
 
-void respaldarPartida(){
+void respaldarDatos(){
     pqxx::work txn(c);
     int idJuego;
     int cont; 
@@ -394,36 +417,40 @@ void respaldarPartida(){
     string nombreData = "";
     string comentariosJugador = "";
     string trash; 
+    EnumTipoDato tipoDato;
     bool success = false; 
     bool conReemplazo;
     
     listarJuegos();
 
-    cout << "Inserte el ID del juego al que pertenece la partida: ";
+    cout << "Inserte el ID del juego al que pertenece el archivo: ";
     cin >> idJuego;
 
-    archivosEncontrados = iConD->encontrarArchivosPorJuego(idJuego);
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    
-    
     while(success == false){
-        cout << "Ingrese un nombre para el backup: ";
-
-        getline(cin, nombreData);
-
-        if(!iConD->disponibilidadNombreData(nombreData)){
-            cout << "Ya existe un backup con el nombre dado. Reintente" << endl;
-        }
-        else{
+        cout << "Quiere respaldar: " << endl;
+        cout << "   1- Partida" << endl;
+        cout << "   2- Configuración" << endl;
+        cin >> opt;
+        if(opt == 1){
+            tipoDato = static_cast<EnumTipoDato>(0);
             success = true; 
         }
+        else if(opt == 2){
+            tipoDato = static_cast<EnumTipoDato>(1);
+            success = true; 
+        }
+        else{
+            cout << "Opción no reconocida. Reintente" << endl; 
+        }
     }
-    success = false; 
+    success = false;
 
-    cout << "Ingrese un comentario para el backup (opcional): ";
 
-    getline(cin, comentariosJugador);
 
+    archivosEncontrados = iConD->encontrarArchivosPorJuego(idJuego, tipoDato);
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    
+    opt = 0; 
     while(opt!=-1){
         cont = 0; 
         success = false; 
@@ -458,19 +485,36 @@ void respaldarPartida(){
             iConD->seleccionarDirectorioLocal(archivoElegido);
         }
     }
+    success = false;
+    
+    while(success == false){
+        cout << "Ingrese un nombre para el backup: ";
+
+        getline(cin, nombreData);
+
+        if(!iConD->disponibilidadNombreData(nombreData)){
+            cout << "Ya existe un backup con el nombre dado. Reintente" << endl;
+        }
+        else{
+            success = true; 
+        }
+    }
+
+    cout << "Ingrese un comentario para el backup (opcional): ";
+
+    getline(cin, comentariosJugador);
+
 
 
     cout << "Ingrese la dirección de la carpeta que quiere usar como backup: ";
 
     getline(cin, directorioBackup);
-
-    EnumTipoDato tipoDato = static_cast<EnumTipoDato>(0);
     bool exito = false; 
 
     while(!exito){
         opt = 0; 
-        cout << "   1-Partida con historial" << endl; 
-        cout << "   2-Partida sin historial" << endl;
+        cout << "   1-Backup con historial" << endl; 
+        cout << "   2-Backup sin historial" << endl;
         cout << "Ingrese una opción: ";
         cin >> opt; 
 
@@ -500,8 +544,10 @@ void respaldarPartida(){
     iConD->crearVirtualData(idJuego, nombreData, comentariosJugador, fechaHora, plataformaFuente, tipoDato, conReemplazo, txn);
 }
 
-void verRespaldosPartida(){
-    EnumTipoDato tipoDato = static_cast<EnumTipoDato>(0); 
+
+
+void verRespaldos(int opcion){
+    EnumTipoDato tipoDato = static_cast<EnumTipoDato>(opcion); 
 
     list<DtData*> partidas = iConD->verVirtualData(tipoDato);
 
@@ -514,45 +560,66 @@ void verRespaldosPartida(){
         }
     }
     else{
-        cout << "El usuario no tiene partidas registradas" << endl; 
+        cout << "El usuario no tiene datos de este tipo registrados" << endl; 
     }
 }
 
+
+/*
+
+
+=================================================================================
+
+La siguiente función requiere solución de bugs
+
+=================================================================================
+
+
+
+*/
+
+
+
 void actualizarRespaldos(){
-    Sesion* sesion = Sesion::getSesion();
-    Usuario* user = sesion->getUsuario();
+    list<DtData*> userData = iConD->verVirtualDataCompleta();
+    list<DtData*>::iterator dt;
 
     int idData; 
     string nombreData;
 
-    list<DtData*> userData = user->listData();
-    list<DtData*>::iterator dt; 
+    list<string> directoriosLocales;
+    list<string>::iterator st;
 
-    list<string> localDataPath; 
-    list<string>::iterator pt; 
-
+    bool desactualizado = false; 
 
     for(dt = userData.begin(); dt!=userData.end(); dt++){
-        localDataPath = iConD->listarArchivosDesactualizados((*dt)->getIdData());
+        desactualizado = iConD->archivosDesactualizados((*dt)->getIdData());
 
         string pathCloud = (*dt)->getDirectorioCloud();
-
         string nombreJuego = iConJ->nombreDeJuego((*dt)->getJuego()) + "/";
+
+
+
 
         size_t pos = pathCloud.find(nombreJuego);
         if(pos != string::npos){
             pathCloud.erase(pos - 1);
         }
 
-        if(!localDataPath.empty()){
-            for(pt=localDataPath.begin();pt!=localDataPath.end();pt++){
-                iConD->seleccionarDirectorioLocal((*pt));
-                
 
-                iConD->crearCarpetaBackup(pathCloud, (*dt)->getJuego(), (*dt)->getNombreData(), !(*dt)->getConHistorial());
+        if(desactualizado){
+            //Se obtienen todos los directorios de archivos en la pc y el respaldo
+            directoriosLocales = (*dt)->getDirectorioLocal();
 
-                iConD->backupearDatos(!(*dt)->getConHistorial());
+            //Se le dan al controlador todos los directorios de los archivos en la pc 
+            for(st=directoriosLocales.begin();st!=directoriosLocales.end();st++){
+                iConD->seleccionarDirectorioLocal((*st));
             }
+                
+            //Se crea la carpeta del backup/elimina los archivos anteriores si no es con historial
+            iConD->crearCarpetaBackup(pathCloud, (*dt)->getJuego(), (*dt)->getNombreData(), !(*dt)->getConHistorial());
+
+            iConD->backupearDatos(!(*dt)->getConHistorial());
 
             idData = (*dt)->getIdData();
             nombreData = (*dt)->getNombreData();
@@ -561,7 +628,7 @@ void actualizarRespaldos(){
 
             cout << "Se actualizaron los archivos del backup " << nombreData << endl; 
         }
-
+        directoriosLocales.clear();
     }
 }
 
@@ -603,6 +670,76 @@ void verJuegosPorUsuario(){
     }
 }
 
+void modificarDatosJuego(){
+    Sesion* sesion = Sesion::getSesion();
+    Usuario* user = sesion->getUsuario();
+    pqxx::work txn(c);
+
+    int idJuego = 0; 
+    string nombre = "";
+    string imgLink = "";
+    string desc = "";
+
+    int opt = 0; 
+
+
+    if(user->getAdmin()){
+        listarJuegos();
+
+        cout << "Ingrese el ID del juego que quiere modificar: ";
+        cin >> idJuego;
+
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        cout << "¿Qué dato desea modificar?" << endl; 
+        cout << "   1- Nombre" << endl;
+        cout << "   2- Imagen" << endl;
+        cout << "   3- Descripción" << endl;
+        cin >> opt; 
+
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        if(opt<=3 && opt>=1){
+            while(opt!=4){
+
+                cout << "Ingrese el nuevo dato: ";
+
+                switch(opt){
+                    case 1:
+                        getline(cin, nombre);
+                    break;
+                    case 2: 
+                        getline(cin, imgLink);
+                    break;
+                    case 3:
+                        getline(cin, desc);
+                    break;
+                    case 4:
+                    break;
+                    default:
+                        cout << "Opción incorrecta. Reintente" << endl; 
+                    break;
+                }
+
+                nombre = ""; //Por ahora, debido a que es necesario ver qué pasa con los datos guardados si se modifica el nombre del juego (porque la carpeta en el backup depende de este parámetro)
+                iConJ->modificarDatosJuego(idJuego, nombre, imgLink, desc, txn);
+
+                cout << "¿Desea modificar otro dato?" << endl; 
+                cout << "   1- Nombre" << endl;
+                cout << "   2- Imagen" << endl;
+                cout << "   3- Descripción" << endl;
+                cout << "   4- Salir" << endl;
+                cin >> opt; 
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            }
+        }
+        else{
+            cout << "Opción incorrecta" << endl; 
+        }
+
+
+    }
+}
 
 void precargarDatos(){
     /*iConU->registro("ElDeLaBarba", "Enzo", "1234", "enzogagu@gmail.com", "google.com", std::move(c));

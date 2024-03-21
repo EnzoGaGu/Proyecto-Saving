@@ -4,7 +4,7 @@ ControladorData::ControladorData(){}
 
 
 //Busca en el sistema todos los archivos posibles de un juego específico. Recorre todas las carpetas guardadas
-list<string> ControladorData::encontrarArchivosPorJuego(int idJuego){
+list<string> ControladorData::encontrarArchivosPorJuego(int idJuego, EnumTipoDato tipoDato){
     ManejadorJuego* mj = ManejadorJuego::getInstancia();
     Juego* juego = mj->find(idJuego);
 
@@ -14,14 +14,24 @@ list<string> ControladorData::encontrarArchivosPorJuego(int idJuego){
 
     string directorio; 
 
-    if(!juego->getArchivosData().empty() && !juego->getDirectoriosData().empty()){
+    list<string> archivosData = juego->getArchivosData();
+    list<string> archivosConfig = juego->getArchivosConfig();
+    list<string> directoriosData = juego->getDirectoriosData();
+
+    if(!archivosData.empty() && !archivosConfig.empty() && !directoriosData.empty()){
         list<string>::iterator it; 
         list<string>::iterator iter;
-        list<string> directoriosData = juego->getDirectoriosData();
-        list<string> archivosData = juego->getArchivosData();
+        list<string> archivos;
+
+        if(tipoDato == EnumTipoDato::PARTIDA){
+            archivos = archivosData; 
+        }
+        else{
+            archivos = archivosConfig;
+        }
 
         for(it = directoriosData.begin(); it != directoriosData.end(); it++){
-            for(iter = archivosData.begin(); iter != archivosData.end(); iter++){
+            for(iter = archivos.begin(); iter != archivos.end(); iter++){
                 directorio = encontrarArchivo((*it), (*iter));
                 if(directorio != ""){
                     directoriosEncontrados.push_back(directorio);
@@ -243,7 +253,7 @@ void ControladorData::crearVirtualData(int idJuego, string nombreData, string co
     ManejadorJuego* mj = ManejadorJuego::getInstancia();
 
     Juego* juego = mj->find(idJuego);
-    int idData; 
+    int idData = 0; 
     bool encontrado; 
 
     bool conHistorial = !conReemplazo; 
@@ -252,34 +262,26 @@ void ControladorData::crearVirtualData(int idJuego, string nombreData, string co
     Usuario* user = sesion->getUsuario();
     list<DtData*> userData = user->listData();
 
-    if(!userData.empty()){
-        list<DtData*>::iterator it; 
-        for(it=userData.begin(); it!=userData.end(); it++){
-            if(this->directorioBackup == (*it)->getDirectorioCloud()){
-                user->findData((*it)->getIdData())->setFechaUltModificacion(fechaCreacionData);
 
-                encontrado = true; 
-            }
-        }
-        if(!encontrado){
-            idData = user->listData().back()->getIdData() + 1;
-        }
-    }
-    else{
-        idData = 0; 
+    //Selecciona el ID del último data añadido a la BD
+    string sql = "SELECT MAX(id_data) FROM data";
+
+    pqxx::result result = txn.exec_params(sql);
+
+    //Si existe algún data en la bd
+    if (!result.empty() && !result[0][0].is_null()) {
+        //Obtiene el último
+        idData = result[0][0].as<int>();
+        idData++;
     }
 
-
-
-    if(!encontrado){
-        string directorioCloud = this->directorioBackup;
-        if(conHistorial){
-            directorioCloud.erase(directorioCloud.size() - 2); 
-        }
-
-        Data* newData = new Data(idData, juego->getIdJuego(), nombreData, this->directorioLocalCompleto, directorioCloud, comentariosJugador, fechaCreacionData, plataforma, tipoDato, conHistorial);
-        user->addData(newData, txn);
+    string directorioCloud = this->directorioBackup;
+    if(conHistorial){
+        directorioCloud.erase(directorioCloud.size() - 2); 
     }
+
+    Data* newData = new Data(idData, juego->getIdJuego(), nombreData, this->directorioLocalCompleto, directorioCloud, comentariosJugador, fechaCreacionData, plataforma, tipoDato, conHistorial);
+    user->addData(newData, txn);
     
     this->directorioBackup = "";
     this->directorioLocal.clear();
@@ -306,16 +308,37 @@ list<DtData*> ControladorData::verVirtualData(EnumTipoDato tipoDato){
     return selectedData;
 }
 
-void ControladorData::actualizarFechaVirutalData(int idData){
+list<DtData*> ControladorData::verVirtualDataCompleta(){
+    Sesion* sesion = Sesion::getSesion();
+    Usuario* user = sesion->getUsuario();
+
+    list<DtData*> allData = user->listData();
+
+    return allData;
+}
+
+void ControladorData::actualizarFechaVirutalData(int idData, pqxx::work& txn){
     Sesion* sesion = Sesion::getSesion();
     Usuario* user = sesion->getUsuario();
 
     Data* data = user->findData(idData);
     
-    DtFechaHora* fechaActual;
+    DtFechaHora* fechaActual = new DtFechaHora();
     fechaActual->setFechaHoraActual();
 
+
+
     data->setFechaUltModificacion(fechaActual);
+
+    txn.exec_params("UPDATE data SET fecha_ult_modificacion = to_custom_type($1, $2, $3, $4, $5, $6) WHERE id_data = $7;", fechaActual->getDia(), fechaActual->getMes(), fechaActual->getAnio(), fechaActual->getHora(), fechaActual->getMinuto(), fechaActual->getSegundo(), data->getIdData());
+    txn.commit();
+
+
+
+    this->directorioBackup = "";
+    this->directorioLocal.clear();
+    this->directorioLocalCompleto.clear();
+    this->nombreArchivo.clear();
 }
 
 //Comprueba si hay archivos del backup cuyas versiones locales son más nuevas que éste, y devuelve una lista de strings con las direcciones locales de los que encuentre. Si no encuentra ninguno, devuelve una lista vacía  
@@ -325,7 +348,7 @@ bool ControladorData::archivosDesactualizados(int idData){
     Data* data = user->findData(idData);
     list<string> directorioLocal = data->getDirectorioLocal();
 
-    bool desactualizado;
+    bool desactualizado = false;
 
     //bool desactualizado = false; 
 
@@ -344,18 +367,20 @@ bool ControladorData::archivosDesactualizados(int idData){
             fechaModificacionArchivo->fechaModificacionArchivo(*st);
 
             cout << "-----------------------------" << endl;
-            cout << (*fechaModificacionArchivo) << endl;
+            cout << "Fecha modificación archivo: " << (*fechaModificacionArchivo) << endl;
 
 
             cout << "Archivo: " << (*st) << endl; 
 
-            cout << (*fechaModificacionData) << endl; 
+            cout << "Fecha del último backup: " << (*fechaModificacionData) << endl; 
 
             cout << "-----------------------------" << endl;
 
-            if(fechaModificacionArchivo > fechaModificacionData){
+            if((*fechaModificacionData) < (*fechaModificacionArchivo)){
                 //Retorna true
                 desactualizado = true; 
+
+                break; 
             }
 
         }

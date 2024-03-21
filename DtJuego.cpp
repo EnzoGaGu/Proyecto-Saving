@@ -3,13 +3,14 @@
 
 DtJuego::DtJuego(){}
 
-DtJuego::DtJuego(int idJuego, string nombre, EnumPlataforma plataforma, string imgLink, string desc, list<string> archivosData, list<string> directoriosData){
+DtJuego::DtJuego(int idJuego, string nombre, EnumPlataforma plataforma, string imgLink, string desc, list<string> archivosData, list<string> archivosConfig, list<string> directoriosData){
     this->idJuego = idJuego;
     this->nombre = nombre; 
     this->plataforma = plataforma;
     this->imgLink = imgLink;
     this->desc = desc;
     this->archivosData = archivosData;
+    this->archivosConfig = archivosConfig; 
     this->directoriosData = directoriosData;
 }
 
@@ -38,6 +39,10 @@ list<string> DtJuego::getArchivosData(){
     return this->archivosData;
 }
 
+list<string> DtJuego::getArchivosConfig(){
+    return this->archivosConfig;
+}
+
 list<string> DtJuego::getDirectoriosData(){
     return this->directoriosData;
 }
@@ -60,8 +65,13 @@ ostream& operator <<(ostream& salida,const DtJuego& a) {
         cout << "   =>" << directorio << endl; 
     }
 
-    cout << "Nombres de archivo: " << endl; 
+    cout << "Nombres de archivos de partidas guardadas: " << endl; 
     for(const string archivo : a.archivosData){
+        cout << "   =>" << archivo << endl; 
+    }
+
+    cout << "Nombres de archivos de configuración: " << endl; 
+    for(const string archivo : a.archivosConfig){
         cout << "   =>" << archivo << endl; 
     }
 

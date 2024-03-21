@@ -16,16 +16,18 @@ class DtJuego{
         string imgLink; 
         string desc;
         list<string> archivosData;
+        list<string> archivosConfig;
         list<string> directoriosData;
     public:
         DtJuego();
-        DtJuego(int idJuego, string nombre, EnumPlataforma plataforma, string imgLink, string desc, list<string> archivosData, list<string> directoriosData);
+        DtJuego(int idJuego, string nombre, EnumPlataforma plataforma, string imgLink, string desc, list<string> archivosData, list<string> archivosConfig, list<string> directoriosData);
         int getIdJuego();
         string getNombre();
         EnumPlataforma getPlataforma();
         string getImgLink();
         string getDesc();
         list<string> getArchivosData();
+        list<string> getArchivosConfig();
         list<string> getDirectoriosData();
         ~DtJuego();
 

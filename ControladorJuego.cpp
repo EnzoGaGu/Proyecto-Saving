@@ -15,12 +15,13 @@ string ControladorJuego::nombreDeJuego(int idJuego){
 }
 
 //Recopila datos de un juego a agregar dados por el usuario, y los guarda en el controlador.
-void ControladorJuego::recopilarDatos(string nombre, EnumPlataforma plataforma, string imgLink, string desc, list<string> archivosData, list<string> directoriosData){
+void ControladorJuego::recopilarDatos(string nombre, EnumPlataforma plataforma, string imgLink, string desc, list<string> archivosData, list<string> archivosConfig, list<string> directoriosData){
     this->nombreJuego = nombre;
     this->plataforma = plataforma;
     this->imgLink = imgLink; 
     this->desc = desc;
     this->archivosData = archivosData;
+    this->archivosConfig = archivosConfig; 
     this->directoriosData = directoriosData;
 }
 
@@ -33,7 +34,7 @@ void ControladorJuego::agregarJuego(pqxx::work& txn){
         idJuego = mj->listar().back()->getIdJuego() + 1;
     }
 
-    Juego* juego = new Juego(idJuego, this->nombreJuego, this->plataforma, this->imgLink, this->desc, this->archivosData, this->directoriosData);
+    Juego* juego = new Juego(idJuego, this->nombreJuego, this->plataforma, this->imgLink, this->desc, this->archivosData, this->archivosConfig, this->directoriosData);
 
     mj->add(juego, txn);
 }
@@ -74,11 +75,17 @@ list<DtJuego*> ControladorJuego::listarJuegos(){
     list<Juego*>::iterator it; 
 
     for(it = juegos.begin(); it!=juegos.end(); it++){
-        DtJuego* DtJ = new DtJuego((*it)->getIdJuego(), (*it)->getNombre(), (*it)->getPlataforma(), (*it)->getImgLink(), (*it)->getDesc(), (*it)->getArchivosData(), (*it)->getDirectoriosData());
+        DtJuego* DtJ = new DtJuego((*it)->getIdJuego(), (*it)->getNombre(), (*it)->getPlataforma(), (*it)->getImgLink(), (*it)->getDesc(), (*it)->getArchivosData(), (*it)->getArchivosConfig(), (*it)->getDirectoriosData());
         DtJuegos.push_back(DtJ);
     }
 
     return DtJuegos;
+}
+
+void ControladorJuego::modificarDatosJuego(int idJuego, string nombre, string imgLink, string desc, pqxx::work& txn){
+    ManejadorJuego* mj = ManejadorJuego::getInstancia();
+
+    mj->modify(idJuego, nombre, imgLink, desc, txn);
 }
 
 ControladorJuego::~ControladorJuego(){}

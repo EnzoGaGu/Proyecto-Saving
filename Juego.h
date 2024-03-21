@@ -13,10 +13,11 @@ class Juego{
         string imgLink; 
         string desc;
         list<string> archivosData;
+        list<string> archivosConfig; 
         list<string> directoriosData;
     public:
         Juego();
-        Juego(int idJuego, string nombre, EnumPlataforma plataforma, string imgLink, string desc, list<string> archivosData, list<string> directoriosData);
+        Juego(int idJuego, string nombre, EnumPlataforma plataforma, string imgLink, string desc, list<string> archivosData, list<string> archivosConfig, list<string> directoriosData);
         void setIdJuego(int idJuego);
         int getIdJuego();
         void setNombre(string nombre);
@@ -29,6 +30,8 @@ class Juego{
         string getDesc();
         void setArchivosData(list<string> archivosData);
         list<string> getArchivosData();
+        void setArchivosConfig(list<string> archivosConfig);
+        list<string> getArchivosConfig();
         void setDirectoriosData(list<string> directoriosData);
         list<string> getDirectoriosData();
         ~Juego();

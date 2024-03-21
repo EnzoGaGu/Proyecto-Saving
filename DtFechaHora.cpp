@@ -112,6 +112,7 @@ ostream& operator <<(ostream& salida,const DtFechaHora& a) {
 	return salida;
 }//sobrecarga de << , para mostrar la clase DtFechaHora
 
+/*
 
 bool operator <(const DtFechaHora& dtf1,const DtFechaHora& dtf2){
 	bool retorno = false;
@@ -143,6 +144,32 @@ bool operator <(const DtFechaHora& dtf1,const DtFechaHora& dtf2){
 	}
 	return retorno;
 }//sobrecarga de < , para comparar fechas
+*/
+
+bool operator <(const DtFechaHora& lhs, const DtFechaHora& rhs) {
+    if (lhs.anio < rhs.anio)
+        return true;
+    if (lhs.anio > rhs.anio)
+        return false;
+    if (lhs.mes < rhs.mes)
+        return true;
+    if (lhs.mes > rhs.mes)
+        return false;
+    if (lhs.dia < rhs.dia)
+        return true;
+    if (lhs.dia > rhs.dia)
+        return false;
+    if (lhs.hora < rhs.hora)
+        return true;
+    if (lhs.hora > rhs.hora)
+        return false;
+    if (lhs.minuto < rhs.minuto)
+        return true;
+    if (lhs.minuto > rhs.minuto)
+        return false;
+    return lhs.segundo < rhs.segundo;
+}
+
 
 bool operator<=(const DtFechaHora& dtf1, const DtFechaHora& dtf2) {
     if (dtf1.anio < dtf2.anio) {
